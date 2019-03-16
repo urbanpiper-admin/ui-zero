@@ -1,12 +1,16 @@
 {
   "name": "ui-zero",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "UI Library",
   "main": "build/index.js",
   "peerDependencies": {
     "react": "^16.0.0",
     "styled-components": "^4.1.3",
     "react-dom": "^15.0.0 || ^16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/urbanpiper/ui-zero.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
