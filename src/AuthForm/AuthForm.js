@@ -283,10 +283,10 @@ export default class AuthForm extends Component {
 					{stage === 'login' || stage === 'signup' ? (
 						<SocialContainer>
 							{/* <Centered smWidth="50%">
-								<img src={facebookLogo} alt="facebook logo" onClick={onFacebookLogin} />
+								<img src={facebookLogo} alt="facebook logo" width="80%" onClick={onFacebookLogin} />
 							</Centered>
 							<Centered smWidth="50%">
-								<img src={googleLogo} alt="google logo" onClick={onGoogleLogin} />
+								<img src={googleLogo} alt="google logo" width="80%" onClick={onGoogleLogin} />
 							</Centered> */}
 							Social Login
 						</SocialContainer>
