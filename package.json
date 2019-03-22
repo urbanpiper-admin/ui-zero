@@ -1,44 +1,53 @@
 {
-  "name": "ui-zero",
-  "version": "1.0.1",
-  "description": "UI Library",
-  "main": "build/index.js",
-  "peerDependencies": {
-    "react": "^16.0.0",
-    "styled-components": "^4.1.3",
-    "react-dom": "^15.0.0 || ^16.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/urbanpiper/ui-zero.git"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack --watch",
-    "build": "webpack"
-  },
-  "author": {
-    "name": "Urbanpiper",
-    "email": "eng@urbanpiper.com"
-  },
-  "contributors": [
-    {
-      "name": "Vishwalpk"
-    },
-    {
-      "name": "Mukesh"
-    }
-  ],
-  "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.24.1",
-    "babel-loader": "^7.0.0",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^1.5.1",
-    "styled-components": "^4.1.3",
-    "react": "^16.0.0",
-    "styled-components": "^4.1.3",
-    "react-dom": "^15.0.0 || ^16.0.0"
-  }
+	"name": "ui-zero",
+	"version": "1.0.1",
+	"description": "UI Library",
+	"main": "build/index.js",
+	"peerDependencies": {
+		"react": "^16.3.1",
+		"styled-components": "^4.1.3",
+		"react-dom": "^16.3.1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/urbanpiper/ui-zero.git"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "webpack --watch",
+		"build": "webpack"
+	},
+	"author": {
+		"name": "Urbanpiper",
+		"email": "eng@urbanpiper.com"
+	},
+	"contributors": [
+		{
+			"name": "Vishwalpk"
+		},
+		{
+			"name": "Mukesh"
+		}
+	],
+	"devDependencies": {
+		"babel-cli": "^6.24.1",
+		"babel-core": "^6.24.1",
+		"babel-eslint": "^9.0.0",
+		"babel-loader": "^7.0.0",
+		"babel-plugin-transform-object-rest-spread": "^6.23.0",
+		"babel-plugin-transform-react-jsx": "^6.24.1",
+		"babel-preset-env": "^1.5.1",
+		"eslint": "^5.15.3",
+		"eslint-config-react-app": "^3.0.8",
+		"eslint-plugin-flowtype": "^2.50.3",
+		"eslint-plugin-import": "^2.16.0",
+		"eslint-plugin-jsx-a11y": "^6.2.1",
+		"eslint-plugin-react": "^7.12.4",
+		"react": "^16.0.0",
+		"react-dom": "^16.0.0",
+		"styled-components": "^4.1.3",
+		"webpack": "^4.29.6",
+		"webpack-bundle-analyzer": "^3.1.0",
+		"webpack-cli": "^3.3.0"
+	}
 }

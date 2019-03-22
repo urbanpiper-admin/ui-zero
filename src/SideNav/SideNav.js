@@ -59,7 +59,7 @@ export default class SideNav extends Component {
           width="75%"
           sliding
           align="left"
-          onCloseModal={this.toggleNavVisibility}
+          onClose={this.toggleNavVisibility}
           showModal={showNav}
         >
           {children}
