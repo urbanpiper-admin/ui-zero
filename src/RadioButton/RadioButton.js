@@ -76,25 +76,24 @@ const PseudoRadioButton = styled.div`
 
 function RadioButton({
 	checked,
+	defaultChecked,
 	primaryColor,
 	secondaryColor,
-	borderColor,
-	onChange,
 	...otherProps
 }) {
 	function pseudoRadioButtonClickHandler(event) {
 		event.target.previousSibling.click();
 	}
 
-	const defaultChecked = checked ? { defaultChecked: true } : {};
+	const computedDefaultChecked =
+		checked || defaultChecked ? { defaultChecked: true } : {};
 
 	return (
 		<Wrapper>
 			<ActualRadioButton
-				onChange={onChange}
 				type="radio"
 				{...otherProps}
-				{...defaultChecked}
+				{...computedDefaultChecked}
 			/>
 			<PseudoRadioButton
 				primaryColor={primaryColor}

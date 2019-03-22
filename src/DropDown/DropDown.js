@@ -3,9 +3,12 @@ import styled from 'styled-components';
 
 import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeValue';
 
+// TODO: allow disabled prop
+
 const Wrapper = styled.div`
 	* {
 		box-sizing: border-box;
+		background-color: white;
 	}
 `;
 
@@ -110,15 +113,13 @@ export default class DropDown extends Component {
 	}
 
 	selectBlurHandler(event) {
-		// const { isActive } = this.state;
-
 		this.setState({
 			isActive: false
 		});
 	}
 
 	selectKeyDownHandler(event) {
-		console.log('keypress');
+		// console.log('keydown');
 	}
 
 	optionClickHandler(event, selectedOption) {
@@ -128,7 +129,15 @@ export default class DropDown extends Component {
 			selectedOption
 		});
 
-		onChange({ value: selectedOption.value });
+		const selectElement = event.target.parentElement.parentElement;
+
+		selectElement.value = selectedOption.value;
+
+		const simulatedEvent = {
+			target: selectElement
+		};
+
+		onChange(simulatedEvent);
 	}
 
 	render() {

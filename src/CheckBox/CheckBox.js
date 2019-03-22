@@ -74,25 +74,24 @@ const PseudoCheckBox = styled.div`
 
 function CheckBox({
 	checked,
+	defaultChecked,
 	primaryColor,
 	secondaryColor,
-	borderColor,
-	onChange,
 	...otherProps
 }) {
 	function pseudoCheckBoxClickHandler(event) {
 		event.target.previousSibling.click();
 	}
 
-	const defaultChecked = checked ? { defaultChecked: true } : {};
+	const computedDefaultChecked =
+		checked || defaultChecked ? { defaultChecked: true } : {};
 
 	return (
 		<Wrapper>
 			<ActualCheckBox
-				onChange={onChange}
 				type="checkbox"
 				{...otherProps}
-				{...defaultChecked}
+				{...computedDefaultChecked}
 			/>
 			<PseudoCheckBox
 				primaryColor={primaryColor}

@@ -36,8 +36,10 @@ const SwitchComponent = styled.div`
 	}
 `;
 
-function Switch({ enabled, onToggle }) {
-	return <SwitchComponent enabled={enabled} onClick={onToggle} />;
+function Switch({ enabled, onToggle, ...otherProps }) {
+	return (
+		<SwitchComponent enabled={enabled} {...otherProps} onClick={onToggle} />
+	);
 }
 
 export default Switch;

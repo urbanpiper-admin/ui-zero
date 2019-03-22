@@ -25,14 +25,12 @@ const AnchorComponent = styled.a`
 
 export default function Anchor({
 	children,
-	size,
 	disabled,
 	tabIndex,
 	...otherProps
 }) {
 	return (
 		<AnchorComponent
-			size={size}
 			disabledLink={disabled}
 			tabIndex={tabIndex || (disabled ? '-1' : '0')}
 			{...otherProps}

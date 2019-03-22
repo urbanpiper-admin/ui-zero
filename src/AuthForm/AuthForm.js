@@ -11,6 +11,7 @@ import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeVa
 // import googleLogo from '../public/images/go.png';
 
 // TODO: add image support and social login
+// TODO: find better alternate to detect local change
 
 const Header = styled.div`
 	padding: 20px;
@@ -70,13 +71,16 @@ const CheckMessage = styled.span`
 
 export default class AuthForm extends Component {
 	static getDerivedStateFromProps(props, state) {
-		if (props.stage && props.stage !== state.stage) {
+		if (props.stage && props.stage !== state.stage && !state.isLocalChange) {
 			return {
 				stage: props.stage
 			};
 		}
 
-		return null;
+		return {
+			// TODO: evaluate need for this
+			isLocalChange: false
+		};
 	}
 
 	constructor(props) {
@@ -92,16 +96,20 @@ export default class AuthForm extends Component {
 			password: '',
 			confirmPassword: '',
 			otp: '',
+			isLocalChange: false,
 
 			passwordMatchFail: false
 		};
 
+		this.runIfPasswordsMatch = this.runIfPasswordsMatch.bind(this);
 		this.getHeaderMessage = this.getHeaderMessage.bind(this);
 		this.getButtonText = this.getButtonText.bind(this);
-		this.runIfPasswordsMatch = this.runIfPasswordsMatch.bind(this);
+		this.resetFormFields = this.resetFormFields.bind(this);
+
 		this.stageChangeClickHandler = this.stageChangeClickHandler.bind(this);
 		this.inputChangeHandler = this.inputChangeHandler.bind(this);
 		this.formSubmitHandler = this.formSubmitHandler.bind(this);
+		this.formCloseHandler = this.formCloseHandler.bind(this);
 	}
 
 	runIfPasswordsMatch(onMatch) {
@@ -111,11 +119,13 @@ export default class AuthForm extends Component {
 			onMatch();
 
 			this.setState({
-				passwordMatchFail: false
+				passwordMatchFail: false,
+				isLocalChange: true
 			});
 		} else {
 			this.setState({
-				passwordMatchFail: true
+				passwordMatchFail: true,
+				isLocalChange: true
 			});
 		}
 	}
@@ -150,17 +160,31 @@ export default class AuthForm extends Component {
 		}
 	}
 
+	resetFormFields() {
+		this.setState({
+			phone: '',
+			name: '',
+			email: '',
+			password: '',
+			confirmPassword: '',
+			otp: '',
+			isLocalChange: true
+		});
+	}
+
 	stageChangeClickHandler(event, newStage) {
 		event.preventDefault();
 
 		this.setState({
-			stage: newStage
+			stage: newStage,
+			isLocalChange: true
 		});
 	}
 
 	inputChangeHandler(event, type) {
 		this.setState({
-			[type]: event.target.value
+			[type]: event.target.value,
+			isLocalChange: true
 		});
 	}
 
@@ -168,15 +192,7 @@ export default class AuthForm extends Component {
 		event.preventDefault();
 
 		const { onSendOTP, onResetPassword, onLogin, onSignUp } = this.props;
-		const {
-			stage,
-			phone,
-			name,
-			email,
-			password,
-			confirmPassword,
-			otp
-		} = this.state;
+		const { stage, phone, name, email, password, otp } = this.state;
 
 		switch (stage) {
 			case 'login':
@@ -211,14 +227,7 @@ export default class AuthForm extends Component {
 						password
 					});
 
-					this.setState({
-						phone: '',
-						name: '',
-						email: '',
-						password: '',
-						confirmPassword: '',
-						otp: ''
-					});
+					this.resetFormFields();
 				});
 
 				break;
@@ -226,6 +235,14 @@ export default class AuthForm extends Component {
 			default:
 				return 'Unknown error';
 		}
+	}
+
+	formCloseHandler(event) {
+		const { onClose } = this.props;
+
+		this.resetFormFields();
+
+		onClose();
 	}
 
 	render() {
@@ -254,7 +271,11 @@ export default class AuthForm extends Component {
 		} = this.state;
 
 		return (
-			<Modal showModal={visible} onClose={onClose} {...otherProps}>
+			<Modal
+				showModal={visible}
+				onClose={this.formCloseHandler}
+				{...otherProps}
+			>
 				<Header primaryColor={primaryColor} secondaryColor={secondaryColor}>
 					{this.getHeaderMessage()}
 				</Header>
