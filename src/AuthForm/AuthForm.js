@@ -52,7 +52,7 @@ const Centered = styled.div`
 	text-align: center;
 
 	@media (max-width: 600px) {
-		width: 100%;
+		width: ${({ smWidth }) => getComputedStyleAttributeValue(smWidth, '100%')};
 	}
 `;
 
@@ -282,8 +282,12 @@ export default class AuthForm extends Component {
 				<Body onSubmit={this.formSubmitHandler}>
 					{stage === 'login' || stage === 'signup' ? (
 						<SocialContainer>
-							{/* <img src={facebookLogo} alt="facebook logo" />
-					<img src={googleLogo} alt="google logo" /> */}
+							{/* <Centered smWidth="50%">
+								<img src={facebookLogo} alt="facebook logo" onClick={onFacebookLogin} />
+							</Centered>
+							<Centered smWidth="50%">
+								<img src={googleLogo} alt="google logo" onClick={onGoogleLogin} />
+							</Centered> */}
 							Social Login
 						</SocialContainer>
 					) : null}
