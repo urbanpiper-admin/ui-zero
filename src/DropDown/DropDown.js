@@ -40,10 +40,20 @@ const Select = styled(Box)`
 	}
 `;
 
+const SelectedName = styled.div`
+	width: 100%;
+	margin-right: 1em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+`;
+
 const Arrow = styled.span`
 	position: absolute;
 	top: 50%;
 	right: 8px;
+
+	width: 1em;
 
 	font-size: 10px;
 
@@ -119,7 +129,49 @@ export default class DropDown extends Component {
 	}
 
 	selectKeyDownHandler(event) {
-		// console.log('keydown');
+		const key = event.keyCode || event.which || event.key;
+
+		const { options } = this.props;
+		const { selectedOption, isActive } = this.state;
+
+		const arrowKeyDownHandler = (startingIndex, edgeIndex) => {
+			event.preventDefault();
+
+			if (selectedOption.value === '') {
+				this.setState({
+					selectedOption: { ...options[startingIndex] }
+				});
+			} else {
+				const prevOptionIndex = options.findIndex(
+					option => option.value === selectedOption.value
+				);
+
+				if (prevOptionIndex !== edgeIndex) {
+					const curIndex =
+						startingIndex === 0 ? prevOptionIndex + 1 : prevOptionIndex - 1;
+
+					this.setState({
+						selectedOption: {
+							...options[curIndex]
+						}
+					});
+				}
+			}
+		};
+
+		if (key === 13 || key === 'Enter') {
+			this.setState({
+				isActive: !isActive
+			});
+		} else if (key === 'ArrowUp' || key === 38) {
+			arrowKeyDownHandler(options.length - 1, 0);
+		} else if (key === 'ArrowDown' || key === 40) {
+			arrowKeyDownHandler(0, options.length - 1);
+		} else if (key === 27 || key === 'Escape') {
+			this.setState({
+				isActive: false
+			});
+		}
 	}
 
 	optionClickHandler(event, selectedOption) {
@@ -158,7 +210,7 @@ export default class DropDown extends Component {
 				>
 					<Arrow>▼</Arrow>
 
-					{selectedOption.name}
+					<SelectedName>{selectedOption.name}</SelectedName>
 
 					<Options expanded={isActive}>
 						{options.map(option => (

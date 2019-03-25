@@ -7,9 +7,6 @@ import Modal from '../Modal/Modal';
 import TextField from '../TextField/TextField';
 import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeValue';
 
-// import facebookLogo from '../public/images/fb.png';
-// import googleLogo from '../public/images/go.png';
-
 // TODO: add image support and social login
 // TODO: find better alternate to detect local change
 
@@ -23,17 +20,22 @@ const Header = styled.div`
 		getComputedStyleAttributeValue(secondaryColor, 'white')};
 `;
 
-const Body = styled.form`
+const Body = styled.div`
 	background-color: ${({ theme, secondaryColor }) =>
 		getComputedStyleAttributeValue(secondaryColor, 'white')};
 `;
 
-const Container = styled.div`
+const Form = styled.form`
 	padding: 20px;
 `;
 
-const SocialContainer = styled(Container)`
+const SocialContainer = styled.div`
+	padding: 20px;
 	border-bottom: 1px solid #e2e2e2;
+`;
+
+const SocialButton = styled(Button)`
+	padding: 0;
 `;
 
 const ContainerItem = styled.div`
@@ -53,6 +55,7 @@ const Centered = styled.div`
 
 	@media (max-width: 600px) {
 		width: ${({ smWidth }) => getComputedStyleAttributeValue(smWidth, '100%')};
+		${({ smPadding }) => (smPadding ? `padding: ${smPadding}` : '')}
 	}
 `;
 
@@ -254,9 +257,11 @@ export default class AuthForm extends Component {
 			onResetPassword,
 			onLogin,
 			onSignUp,
-			onGoogleLogin,
-			onFacebookLogin,
+			onSocialLogin1,
+			onSocialLogin2,
 			onClose,
+			socialImageSrc1,
+			socialImageSrc2,
 			...otherProps
 		} = this.props;
 		const {
@@ -282,16 +287,37 @@ export default class AuthForm extends Component {
 				<Body onSubmit={this.formSubmitHandler}>
 					{stage === 'login' || stage === 'signup' ? (
 						<SocialContainer>
-							{/* <Centered smWidth="50%">
-								<img src={facebookLogo} alt="facebook logo" width="80%" onClick={onFacebookLogin} />
+							<Centered smWidth="50%">
+								<div>
+									<SocialButton
+										width="80%"
+										borderColor="transparent"
+										onClick={onSocialLogin1}
+									>
+										<img
+											src={socialImageSrc1}
+											alt="social login 1"
+											width="100%"
+										/>
+									</SocialButton>
+								</div>
 							</Centered>
 							<Centered smWidth="50%">
-								<img src={googleLogo} alt="google logo" width="80%" onClick={onGoogleLogin} />
-							</Centered> */}
-							Social Login
+								<SocialButton
+									width="80%"
+									borderColor="transparent"
+									onClick={onSocialLogin2}
+								>
+									<img
+										src={socialImageSrc2}
+										alt="social login 2"
+										width="100%"
+									/>
+								</SocialButton>
+							</Centered>
 						</SocialContainer>
 					) : null}
-					<Container>
+					<Form>
 						{stage === 'reset' ? (
 							<ContainerItem>
 								<TextField
@@ -378,7 +404,7 @@ export default class AuthForm extends Component {
 
 						<ContainerItem>
 							{stage === 'login' ? (
-								<Centered>
+								<Centered smPadding="0 0 10px">
 									<ModalAnchor
 										disabled={!visible}
 										href="#"
@@ -424,7 +450,7 @@ export default class AuthForm extends Component {
 								</Anchor>
 							</Centered>
 						</ContainerItem>
-					</Container>
+					</Form>
 				</Body>
 			</Modal>
 		);

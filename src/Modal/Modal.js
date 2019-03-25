@@ -39,6 +39,20 @@ const ModalContent = styled.div`
     box-sizing: border-box;
   } 
 
+	
+	::-webkit-scrollbar {
+		width: 5px;
+	}
+
+	::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	}
+
+	::-webkit-scrollbar-thumb {
+		background-color: hsl(0, 0%, 50%);
+		outline: 1px solid hsl(210, 13%, 50%);
+	}
+
 	position: fixed;
 	top: 50%;
 	${({ align, modalWidth, showModal }) => {
@@ -115,9 +129,9 @@ export default class Modal extends Component {
 	keyDownHandler(event) {
 		const { onClose, showModal } = this.props;
 
-		const key = event.keyCode || event.which;
+		const key = event.keyCode || event.which || event.key;
 
-		if (key === 27 && showModal) {
+		if ((key === 27 || key === 'Escape') && showModal) {
 			onClose();
 		}
 	}
@@ -159,11 +173,28 @@ export default class Modal extends Component {
 	}
 
 	componentDidMount() {
-		// TODO: Attach only on showModal; Detach otherwise
-		window.addEventListener('keydown', this.keyDownHandler);
+		const { showModal } = this.props;
+
+		if (showModal) {
+			window.addEventListener('keydown', this.keyDownHandler);
+		}
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		const { showModal } = this.props;
+
+		if (showModal) {
+			window.addEventListener('keydown', this.keyDownHandler);
+		} else {
+			window.removeEventListener('keydown', this.keyDownHandler);
+		}
 	}
 
 	componentWillUnmount() {
-		window.removeEventListener('keydown', this.keyDownHandler);
+		const { showModal } = this.props;
+
+		if (showModal) {
+			window.removeEventListener('keydown', this.keyDownHandler);
+		}
 	}
 }
