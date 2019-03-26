@@ -3,8 +3,6 @@ import styled from 'styled-components';
 
 import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeValue';
 
-// TODO: Rewrite Modal to improve animation performance
-
 const ModalBG = styled.div`
 	position: fixed;
 	top: 0;
@@ -60,9 +58,11 @@ const ModalContent = styled.div`
 
 		switch (align) {
 			case 'left':
-				return `left: -${showModal ? '0' : width}`;
+				return `left: -${width};`;
+			// return `left: -${showModal ? '0' : width}`;
 			case 'right':
-				return `right: -${showModal ? '0' : width}`;
+				return `right: -${width};`;
+			// return `right: -${showModal ? '0' : width}`;
 			default:
 				return `left: ${showModal ? '50%' : `-${width}`}`;
 		}
@@ -91,14 +91,14 @@ const ModalContent = styled.div`
 		switch (align) {
 			case 'left':
 				modalXTranslation = {
-					whenVisible: '0',
-					whenHidden: '-100%'
+					whenVisible: '100%',
+					whenHidden: '0'
 				};
 				break;
 			case 'right':
 				modalXTranslation = {
-					whenVisible: '0',
-					whenHidden: '100%'
+					whenVisible: '-100%',
+					whenHidden: '0'
 				};
 				break;
 			default:
@@ -114,7 +114,7 @@ const ModalContent = styled.div`
 						? modalXTranslation.whenVisible
 						: modalXTranslation.whenHidden
 			  }, -50%);
-				transition: left 0.3s ease 0s, right 0.3s ease 0s, transform 0.3s ease 0s;`
+				transition: transform 0.3s ease 0s, left 0.3s ease 0s;`
 			: 'transform: translate(-50%, -50%)';
 	}}
 `;

@@ -3,13 +3,13 @@ import styled from 'styled-components';
 
 import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeValue';
 
-// TODO: allow disabled prop
-
 const Wrapper = styled.div`
 	* {
 		box-sizing: border-box;
 		background-color: white;
 	}
+
+	display: inline-block;
 `;
 
 const Box = styled.div`
@@ -34,10 +34,18 @@ const Select = styled(Box)`
 	border-color: #c2c2c2;
 	outline: 0;
 
-	:hover,
-	:focus {
-		border-color: ${({ isActive }) => (isActive ? '#4d545b' : '#a2a8af')};
-	}
+	${({ disabled }) =>
+		disabled
+			? `
+				pointer-events: none;
+				opacity: 0.2;
+			`
+			: `
+				:hover,
+				:focus {
+					border-color: ${({ isActive }) => (isActive ? '#4d545b' : '#a2a8af')};
+				}
+			`}
 `;
 
 const SelectedName = styled.div`
@@ -65,6 +73,7 @@ const Options = styled.div`
 	top: 100%;
 	left: 0;
 	overflow: hidden;
+	z-index: 1;
 
 	width: 100%;
 	margin: 1px 0 0;
@@ -193,7 +202,7 @@ export default class DropDown extends Component {
 	}
 
 	render() {
-		const { height, width, options, ...otherProps } = this.props;
+		const { height, width, options, disabled, ...otherProps } = this.props;
 		const { selectedOption, isActive } = this.state;
 
 		return (
@@ -206,7 +215,8 @@ export default class DropDown extends Component {
 					onClick={this.selectClickHandler}
 					onBlur={this.selectBlurHandler}
 					onKeyDown={this.selectKeyDownHandler}
-					tabIndex="0"
+					tabIndex={disabled ? '-1' : '0'}
+					disabled={disabled}
 				>
 					<Arrow>▼</Arrow>
 

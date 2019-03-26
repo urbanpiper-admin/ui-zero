@@ -7,9 +7,6 @@ import Modal from '../Modal/Modal';
 import TextField from '../TextField/TextField';
 import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeValue';
 
-// TODO: add image support and social login
-// TODO: find better alternate to detect local change
-
 const Header = styled.div`
 	padding: 20px;
 
@@ -81,7 +78,6 @@ export default class AuthForm extends Component {
 		}
 
 		return {
-			// TODO: evaluate need for this
 			isLocalChange: false
 		};
 	}

@@ -15,7 +15,7 @@ const CardHeader = styled.b`
 `;
 
 const CardBody = styled.p`
-	font-size: 0.8em;
+	font-size: 0.9em;
 `;
 
 const CardFooter = styled.div`
