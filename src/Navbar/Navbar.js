@@ -5,6 +5,7 @@ import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeVa
 
 const NavbarComponent = styled.nav`
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
 
     ${({ fixed: isFixed, fixTo }) =>

@@ -1,6 +1,6 @@
 {
 	"name": "ui-zero",
-	"version": "1.0.1",
+	"version": "1.1.2",
 	"description": "UI Library",
 	"main": "build/index.js",
 	"peerDependencies": {
