@@ -5,23 +5,33 @@ import Button from '../../Button/Button';
 import Card from '../../Card/Card';
 import Counter from '../../Counter/Counter';
 
-const CardHeader = styled.b`
+const CardHeader = styled.div`
 	display: inline-block;
 
-	white-space: nowrap;
-	width: 100%;
 	overflow: hidden;
+
+	width: 100%;
+	margin: 10px 0 0;
+
+	white-space: nowrap;
 	text-overflow: ellipsis;
+	font-weight: bolder;
+	font-size: 16px;
 `;
 
 const CardBody = styled.p`
-	font-size: 0.9em;
+	margin: 5px 0 20px;
+
+	font-weight: lighter;
+	font-size: 14px;
 `;
 
 const CardFooter = styled.div`
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
+
+	margin-bottom: 5px;
 `;
 
 const CardFooterItem = styled.div`
@@ -33,16 +43,21 @@ const CardFooterItem = styled.div`
 	width: 50%;
 `;
 
+const Price = styled(CardFooterItem)`
+	font-weight: bolder;
+	font-size: 16px;
+`;
+
 const Icon = styled.span`
 	display: inline-flex;
 
 	position: relative;
 
 	box-sizing: border-box;
-	height: 1em;
-	width: 1em;
+	height: 16px;
+	width: 16px;
 	border-radius: 3px;
-	margin-right: 0.25em;
+	margin-right: 3px;
 
 	border: 1px solid
 		${({ type }) => (type && type === 'veg' ? '#3cae4d' : '#f56349')};
@@ -56,8 +71,8 @@ const Icon = styled.span`
 		top: 50%;
 		left: 50%;
 
-		height: 0.4em;
-		width: 0.4em;
+		height: 6px;
+		width: 6px;
 		border-radius: 50%;
 
 		background-color: ${({ type }) =>
@@ -65,6 +80,14 @@ const Icon = styled.span`
 
 		transform: translate(-50%, -50%);
 	}
+`;
+
+const CardCounter = styled(Counter)`
+	font-size: 14px;
+`;
+
+const CardButton = styled(Button)`
+	font-size: 13px;
 `;
 
 export default function UPCard({
@@ -103,12 +126,10 @@ export default function UPCard({
 			</CardHeader>
 			<CardBody>{description}</CardBody>
 			<CardFooter>
-				<CardFooterItem align="left">
-					<b>{itemPrice}</b>
-				</CardFooterItem>
+				<Price align="left">{itemPrice}</Price>
 				<CardFooterItem align="right">
 					{itemQty && itemQty > 0 ? (
-						<Counter
+						<CardCounter
 							width="110px"
 							primaryColor={primaryColor}
 							useCarets
@@ -116,16 +137,16 @@ export default function UPCard({
 							onDecrement={onItemQtyDecrease}
 						>
 							{itemQty}
-						</Counter>
+						</CardCounter>
 					) : (
-						<Button
+						<CardButton
 							width="110px"
 							borderColor={primaryColor}
 							color={primaryColor}
 							onClick={onItemQtyIncrease}
 						>
 							ADD
-						</Button>
+						</CardButton>
 					)}
 				</CardFooterItem>
 			</CardFooter>
