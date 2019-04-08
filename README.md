@@ -1,10 +1,11 @@
 # ui-zero
+
 Urbanpiper UI Library (React)
 
 ## Rich set of highly customizable React components.
 
+### Installation
 
-### Installation  
-`npm install ui-zero`
+`npm install ui-zero styled-components`
 
-Documentation / Demo Link: https://inspiring-perlman-26a38c.netlify.com/
+Documentation / Demo Link: https://compassionate-lalande-c3d289.netlify.com/
