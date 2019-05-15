@@ -7,6 +7,8 @@ import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeVa
 const Wrapper = styled.div`
 	display: flex;
 	align-items: center;
+
+	height: ${({ counterHeight }) => counterHeight};
 	width: ${({ counterWidth }) =>
 		getComputedStyleAttributeValue(counterWidth, '110px')};
 
@@ -21,15 +23,14 @@ const CounterValue = styled.span`
 	align-items: center;
 	justify-content: center;
 
-	height: 36px;
+	height: 100%;
 	width: 33.33333%;
 	border: solid
 		${({ theme, primaryColor }) =>
 			getComputedStyleAttributeValue(primaryColor, theme.primaryColor)};
 	border-width: 1px 0;
 
-	background-color: ${({ secondaryColor }) =>
-		getComputedStyleAttributeValue(secondaryColor, 'white')}
+	background-color: white;
 
 	color: ${({ theme, primaryColor }) =>
 		getComputedStyleAttributeValue(primaryColor, theme.primaryColor)};
@@ -37,6 +38,8 @@ const CounterValue = styled.span`
 `;
 
 const CounterButton = styled(Button)`
+	height: 100%;
+
 	background-color: ${({ theme, primaryColor }) =>
 		getComputedStyleAttributeValue(primaryColor, theme.primaryColor)};
 	border-radius: 0;
@@ -50,6 +53,7 @@ const CounterButton = styled(Button)`
 export default function Counter({
 	children,
 	width,
+	height = '36px',
 	primaryColor,
 	secondaryColor,
 	onIncrement,
@@ -61,6 +65,7 @@ export default function Counter({
 			primaryColor={primaryColor}
 			secondaryColor={secondaryColor}
 			counterWidth={width}
+			counterHeight={height}
 			{...otherProps}
 		>
 			<CounterButton

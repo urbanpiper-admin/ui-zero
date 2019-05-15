@@ -1,26 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeValue';
 import getStateStyles from '../utils/getStateStyles';
 import styles from './Button.css.js';
 
 const ButtonComponent = styled.button`
 	${styles.buttonStyles}
 
-	height: ${({ btnHeight }) => getComputedStyleAttributeValue(btnHeight, '36px')};
-	width: ${({ btnWidth, shape }) =>
-		getComputedStyleAttributeValue(
-			btnWidth,
-			shape === 'circle' ? '36px' : 'auto'
-		)};
+	height: ${({ btnHeight }) => btnHeight};
+	width: ${({ btnWidth }) => btnWidth};
 	border: 1px solid
-		${({ borderColor, backgroundColor, theme }) =>
-			getComputedStyleAttributeValue(
-				borderColor,
-				backgroundColor ? backgroundColor : theme.primaryColor
-			)};
-	border-radius: ${({ shape, btnColorheme }) => {
+		${({ theme, variant, borderColor, backgroundColor, btnColor }) =>
+			borderColor ||
+			(variant === 'fill'
+				? backgroundColor || theme.primaryColor
+				: theme.primaryColor)};
+	border-radius: ${({ shape }) => {
 		switch (shape) {
 			case 'circle':
 				return '50%';
@@ -31,22 +26,36 @@ const ButtonComponent = styled.button`
 		}
 	}};
 
-	background-color: ${({ backgroundColor }) =>
-		getComputedStyleAttributeValue(backgroundColor, 'white')};
+	background-color: ${({ theme, variant, backgroundColor }) =>
+		backgroundColor || (variant === 'fill' ? theme.primaryColor : 'white')};
 
-	color: ${({ btnColor, theme }) =>
-		getComputedStyleAttributeValue(btnColor, theme.primaryColor)};
+	color: ${({ theme, btnColor, variant }) =>
+		btnColor || (variant === 'fill' ? 'white' : theme.primaryColor)};
 
 	${({ styleOnHover, styleOnFocus, styleOnActive }) =>
 		getStateStyles(styleOnHover, styleOnActive, styleOnFocus)}
 `;
 
-function Button({ width, height, color, children, ...otherProps }) {
+function Button({
+	variant = 'outline',
+	shape = 'rectangle',
+	width = shape === 'circle' ? '36px' : 'auto',
+	height = '36px',
+	color,
+	children,
+	backgroundColor,
+	borderColor,
+	...otherProps
+}) {
 	return (
 		<ButtonComponent
 			btnColor={color}
 			btnWidth={width}
 			btnHeight={height}
+			backgroundColor={backgroundColor}
+			borderColor={borderColor}
+			variant={variant}
+			shape={shape}
 			{...otherProps}
 		>
 			{children}

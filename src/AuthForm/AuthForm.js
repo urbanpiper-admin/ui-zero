@@ -11,15 +11,13 @@ const Header = styled.div`
 	padding: 20px;
 
 	background-color: ${({ theme, primaryColor }) =>
-		getComputedStyleAttributeValue(primaryColor, theme.primaryColor)};
+		primaryColor || theme.primaryColor};
 
-	color: ${({ theme, secondaryColor }) =>
-		getComputedStyleAttributeValue(secondaryColor, 'white')};
+	color: ${({ theme, secondaryColor }) => secondaryColor};
 `;
 
 const Body = styled.div`
-	background-color: ${({ theme, secondaryColor }) =>
-		getComputedStyleAttributeValue(secondaryColor, 'white')};
+	background-color: ${({ theme, secondaryColor }) => secondaryColor};
 `;
 
 const Form = styled.form`
@@ -56,6 +54,33 @@ const Centered = styled.div`
 	}
 `;
 
+const OptionsSeparator = styled.div`
+	display: flex;
+	align-items: center;
+
+	width: 100%;
+
+	color: #bfbfbf;
+
+	::before,
+	::after {
+		content: '';
+
+		height: 1px;
+		width: 100%;
+
+		background-color: #bfbfbf;
+	}
+
+	::before {
+		margin: 0 10px 0 0;
+	}
+
+	::after {
+		margin: 0 0 0 10px;
+	}
+`;
+
 const ModalButton = styled(Button)`
 	width: 80%;
 
@@ -66,7 +91,7 @@ const ModalButton = styled(Button)`
 
 const CheckMessage = styled.span`
 	font-size: 12px;
-	color: hsl(0, 0%, 75%);
+	color: #bfbfbf;
 `;
 
 export default class AuthForm extends Component {
@@ -86,7 +111,7 @@ export default class AuthForm extends Component {
 		super(props);
 
 		this.state = {
-			// stage: 'login' | 'signup' | 'forgot' | 'reset'
+			// stage: 'login' | 'signup' | 'forgot' | 'reset' | 'guest'
 			stage: props.stage || 'reset',
 
 			phone: '',
@@ -137,6 +162,8 @@ export default class AuthForm extends Component {
 				return 'Sign in to your account';
 			case 'signup':
 				return 'Create new account';
+			case 'guest':
+				return 'Continue as guest';
 			default:
 				return 'Reset your password';
 		}
@@ -154,6 +181,8 @@ export default class AuthForm extends Component {
 				return 'Send OTP';
 			case 'reset':
 				return 'Reset password';
+			case 'guest':
+				return 'Checkout as guest';
 			default:
 				return 'Unknown error';
 		}
@@ -190,7 +219,13 @@ export default class AuthForm extends Component {
 	formSubmitHandler(event) {
 		event.preventDefault();
 
-		const { onSendOTP, onResetPassword, onLogin, onSignUp } = this.props;
+		const {
+			onSendOTP,
+			onResetPassword,
+			onLogin,
+			onSignUp,
+			onGuestCheckout
+		} = this.props;
 		const { stage, phone, name, email, password, otp } = this.state;
 
 		switch (stage) {
@@ -231,6 +266,13 @@ export default class AuthForm extends Component {
 
 				break;
 
+			case 'guest':
+				onGuestCheckout({
+					name,
+					phone
+				});
+				break;
+
 			default:
 				return 'Unknown error';
 		}
@@ -247,14 +289,17 @@ export default class AuthForm extends Component {
 	render() {
 		const {
 			primaryColor,
-			secondaryColor,
+			secondaryColor = 'white',
 			visible,
 			onSendOTP,
 			onResetPassword,
 			onLogin,
 			onSignUp,
+			disableSocialLogin = false,
 			onSocialLogin1,
 			onSocialLogin2,
+			disableGuestCheckout = false,
+			onGuestCheckout,
 			onClose,
 			socialImageSrc1,
 			socialImageSrc2,
@@ -281,7 +326,7 @@ export default class AuthForm extends Component {
 					{this.getHeaderMessage()}
 				</Header>
 				<Body onSubmit={this.formSubmitHandler}>
-					{stage === 'login' || stage === 'signup' ? (
+					{!disableSocialLogin && (stage === 'login' || stage === 'signup') ? (
 						<SocialContainer>
 							<Centered smWidth="50%">
 								<div>
@@ -314,13 +359,29 @@ export default class AuthForm extends Component {
 						</SocialContainer>
 					) : null}
 					<Form>
+						{/* TODO: Remove repetitive code. */}
+						{stage === 'guest' ? (
+							<ContainerItem>
+								<TextField
+									disabled={!visible}
+									required
+									type="text"
+									width="100%"
+									// placeholder="Name"
+									label="Name"
+									value={name}
+									onChange={event => this.inputChangeHandler(event, 'name')}
+								/>
+							</ContainerItem>
+						) : null}
 						{stage === 'reset' ? (
 							<ContainerItem>
 								<TextField
 									disabled={!visible}
 									required
 									width="100%"
-									placeholder="OTP"
+									// placeholder="OTP"
+									label="OTP"
 									value={otp}
 									onChange={event => this.inputChangeHandler(event, 'otp')}
 								/>
@@ -333,13 +394,13 @@ export default class AuthForm extends Component {
 									type="tel"
 									maxLength="10"
 									width="100%"
-									placeholder="Phone"
+									// placeholder="Phone"
+									label="Phone"
 									value={phone}
 									onChange={event => this.inputChangeHandler(event, 'phone')}
 								/>
 							</ContainerItem>
 						)}
-
 						{stage === 'signup' ? (
 							<React.Fragment>
 								<ContainerItem>
@@ -348,7 +409,8 @@ export default class AuthForm extends Component {
 										required
 										type="text"
 										width="100%"
-										placeholder="Name"
+										// placeholder="Name"
+										label="Name"
 										value={name}
 										onChange={event => this.inputChangeHandler(event, 'name')}
 									/>
@@ -359,28 +421,28 @@ export default class AuthForm extends Component {
 										required
 										type="email"
 										width="100%"
-										placeholder="Email"
+										// placeholder="Email"
+										label="Email"
 										value={email}
 										onChange={event => this.inputChangeHandler(event, 'email')}
 									/>
 								</ContainerItem>
 							</React.Fragment>
 						) : null}
-
-						{stage !== 'forgot' ? (
+						{stage !== 'forgot' && stage !== 'guest' ? (
 							<ContainerItem>
 								<TextField
 									disabled={!visible}
 									required
 									type="password"
 									width="100%"
-									placeholder={stage === 'reset' ? 'New password' : 'Password'}
+									// placeholder={stage === 'reset' ? 'New password' : 'Password'}
+									label={stage === 'reset' ? 'New password' : 'Password'}
 									value={password}
 									onChange={event => this.inputChangeHandler(event, 'password')}
 								/>
 							</ContainerItem>
 						) : null}
-
 						{stage === 'signup' || stage === 'reset' ? (
 							<ContainerItem>
 								<TextField
@@ -388,7 +450,8 @@ export default class AuthForm extends Component {
 									required
 									type="password"
 									width="100%"
-									placeholder="Confirm Password"
+									// placeholder="Confirm Password"
+									label="Confirm Password"
 									warning={passwordMatchFail ? "Passwords don't match" : ''}
 									value={confirmPassword}
 									onChange={event =>
@@ -397,7 +460,6 @@ export default class AuthForm extends Component {
 								/>
 							</ContainerItem>
 						) : null}
-
 						<ContainerItem>
 							{stage === 'login' ? (
 								<Centered smPadding="0 0 10px">
@@ -416,11 +478,9 @@ export default class AuthForm extends Component {
 								<ModalButton
 									disabled={!visible}
 									width="100%"
+									variant="fill"
 									backgroundColor={primaryColor}
-									color={getComputedStyleAttributeValue(
-										secondaryColor,
-										'white'
-									)}
+									color={secondaryColor}
 								>
 									{this.getButtonText()}
 								</ModalButton>
@@ -446,6 +506,32 @@ export default class AuthForm extends Component {
 								</Anchor>
 							</Centered>
 						</ContainerItem>
+						{!disableGuestCheckout && stage === 'login' ? (
+							<React.Fragment>
+								<ContainerItem>
+									<Centered width="100%">
+										<OptionsSeparator>OR</OptionsSeparator>
+									</Centered>
+								</ContainerItem>
+								<ContainerItem>
+									<Button
+										width="100%"
+										backgroundColor={secondaryColor}
+										color="#9f9396"
+										borderColor="#9f9396"
+										styleOnHover={{
+											color: primaryColor,
+											'border-color': primaryColor
+										}}
+										onClick={event =>
+											this.stageChangeClickHandler(event, 'guest')
+										}
+									>
+										CONTINUE AS GUEST
+									</Button>
+								</ContainerItem>
+							</React.Fragment>
+						) : null}
 					</Form>
 				</Body>
 			</Modal>

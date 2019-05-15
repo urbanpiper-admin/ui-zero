@@ -62,18 +62,30 @@ export default class Tabs extends Component {
 	}
 
 	tabHeaderClickHandler(event, index) {
+		const { headers, onChange } = this.props;
+
 		this.setState({
 			activeTabIndex: index
 		});
+
+		if (onChange) {
+			onChange({ target: { value: headers[index] } });
+		}
 	}
 
 	tabHeaderKeyDownHandler(event, index) {
+		const { headers, onChange } = this.props;
+
 		const key = event.key || event.which || event.key;
 
 		if (key === 'Enter' || key === 13) {
 			this.setState({
 				activeTabIndex: index
 			});
+
+			if (onChange) {
+				onChange({ target: { value: headers[index] } });
+			}
 		}
 	}
 

@@ -4,8 +4,15 @@ import styled from 'styled-components';
 import getComputedStyleAttributeValue from './../utils/getComputedStyleAttributeValue';
 
 const Wrapper = styled.div`
-	box-sizing: border-box;
+	display: inline-flex;
+	align-content: center;
 
+	* {
+		box-sizing: border-box;
+	}
+`;
+
+const CheckBoxContainer = styled.div`
 	display: inline-block;
 
 	position: relative;
@@ -15,8 +22,6 @@ const Wrapper = styled.div`
 `;
 
 const ActualCheckBox = styled.input`
-	box-sizing: border-box;
-
 	display: inline-block;
 
 	position: absolute;
@@ -31,8 +36,6 @@ const ActualCheckBox = styled.input`
 `;
 
 const PseudoCheckBox = styled.div`
-	box-sizing: border-box;
-
 	display: inline-block;
 
 	position: relative;
@@ -72,32 +75,71 @@ const PseudoCheckBox = styled.div`
 	}
 `;
 
+const Label = styled.label`
+	padding-left: 3px;
+	padding-right: 3px;
+
+	cursor: pointer;
+
+	${({ labelColor }) => `color: ${labelColor};`};
+
+	${({ isCheckBoxDisabled }) =>
+		isCheckBoxDisabled
+			? `
+					opacity: 0.2;
+					cursor: default;
+				`
+			: ''}
+`;
+
 function CheckBox({
 	checked,
 	defaultChecked,
 	primaryColor,
 	secondaryColor,
+	labelColor,
+	label,
+	disabled,
 	...otherProps
 }) {
 	function pseudoCheckBoxClickHandler(event) {
 		event.target.previousSibling.click();
 	}
 
+	function labelClickHandler(event) {
+		event.target.previousSibling.children[0].click();
+	}
+
 	const computedDefaultChecked =
 		checked || defaultChecked ? { defaultChecked: true } : {};
 
+	const isDisabled = disabled ? { disabled: true } : {};
+
 	return (
 		<Wrapper>
-			<ActualCheckBox
-				type="checkbox"
-				{...otherProps}
-				{...computedDefaultChecked}
-			/>
-			<PseudoCheckBox
-				primaryColor={primaryColor}
-				secondaryColor={secondaryColor}
-				onClick={pseudoCheckBoxClickHandler}
-			/>
+			<CheckBoxContainer>
+				<ActualCheckBox
+					type="checkbox"
+					{...isDisabled}
+					{...otherProps}
+					{...computedDefaultChecked}
+				/>
+				<PseudoCheckBox
+					primaryColor={primaryColor}
+					secondaryColor={secondaryColor}
+					onClick={pseudoCheckBoxClickHandler}
+				/>
+			</CheckBoxContainer>
+
+			{label ? (
+				<Label
+					isCheckBoxDisabled={disabled}
+					onClick={labelClickHandler}
+					labelColor={labelColor}
+				>
+					{label}
+				</Label>
+			) : null}
 		</Wrapper>
 	);
 }

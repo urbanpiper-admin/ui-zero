@@ -9,18 +9,19 @@ const Container = styled.div`
 	}
 
 	display: inline-block;
-	padding-top: 20px;
 
 	position: relative;
+
+	width: ${({width}) => width};
+	padding-top: 20px;
+
 `;
 
 const Input = styled.textarea`
-	width: ${({ width }) => getComputedStyleAttributeValue(width, 'auto')};
+	width: 100%;
 	padding: 10px;
-
-	outline: 0;
-
 	border: 1px solid #c2c2c2;
+	outline: 0;
 
 	:hover,
 	:focus {
@@ -41,7 +42,7 @@ const Label = styled.label`
 	left: 0;
 
 	font-size: 12px;
-	font-weight: bold;
+	/* font-weight: bolder; */
 	color: ${({ variant, disabled }) =>
 		variant === 'boxed' && !disabled ? '#9f9396' : '#d3d3d3'};
 
@@ -51,6 +52,7 @@ const Label = styled.label`
 
 	${Input}:focus + & {
 		color: #9f9396;
+		color: ${({theme}) => theme.primaryColor};
 	}
 `;
 
@@ -99,10 +101,9 @@ class TextArea extends Component {
 		const disabled = isDisabled ? { disabled: true } : {};
 
 		return (
-			<Container>
+			<Container width={width}>
 				<Input
 					{...disabled}
-					width={width}
 					{...otherProps}
 					value={inputValue}
 					onChange={this.inputChangeHandler}
