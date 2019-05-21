@@ -1,37 +1,37 @@
-export { default as CheckBox } from './CheckBox/CheckBox';
+export { default as Anchor } from './Anchor';
 
-export { default as RadioButton } from './RadioButton/RadioButton';
+export { default as AuthForm } from './AuthForm';
 
-export { default as Button } from './Button/Button';
+export { default as Button } from './Button';
 
-export { default as Card } from './Card/Card';
+export { default as Card } from './Card';
 
-export { default as Counter } from './Counter/Counter';
+export { default as CheckBox } from './CheckBox';
 
-export { default as Image } from './Image/Image';
+export { default as Counter } from './Counter';
 
-export { default as Modal } from './Modal/Modal';
+export { default as DropDown } from './DropDown';
 
-export { default as Navbar } from './Navbar/Navbar';
+export { default as Image } from './Image';
 
-export { default as SideNav } from './SideNav/SideNav';
+export { default as Modal } from './Modal';
 
-export { default as TextField } from './TextField/TextField';
+export { default as Navbar } from './Navbar';
 
-export { default as UPCard } from './UrbanPiper/UPCard/UPCard';
+export { default as RadioButton } from './RadioButton';
 
-export { default as Switch } from './Switch/Switch';
+export { default as SideNav } from './SideNav';
 
-export {
-	default as UIZeroThemeProvider
-} from './UIZeroThemeProvider/UIZeroThemeProvider';
+export { default as Switch } from './Switch';
 
-export { default as AuthForm } from './AuthForm/AuthForm';
+export { default as Tabs } from './Tabs';
 
-export { default as Anchor } from './Anchor/Anchor';
+export { default as TabSlider } from './TabSlider';
 
-export { default as DropDown } from './DropDown/DropDown';
+export { default as TextArea } from './TextArea';
 
-export { default as Tabs } from './Tabs/Tabs';
+export { default as TextField } from './TextField';
 
-export { default as TextArea } from './TextArea/TextArea';
+export { default as UIZeroThemeProvider } from './UIZeroThemeProvider';
+
+export { default as UPCard } from './UPCard';

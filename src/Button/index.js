@@ -15,8 +15,8 @@ const ButtonComponent = styled.button`
 			(variant === 'fill'
 				? backgroundColor || theme.primaryColor
 				: theme.primaryColor)};
-	border-radius: ${({ shape }) => {
-		switch (shape) {
+	border-radius: ${({ btnShape }) => {
+		switch (btnShape) {
 			case 'circle':
 				return '50%';
 			case 'rounded':
@@ -45,6 +45,8 @@ function Button({
 	children,
 	backgroundColor,
 	borderColor,
+	onClick = event =>
+		console.warn('onClick listener not attached to clicked button'),
 	...otherProps
 }) {
 	return (
@@ -55,7 +57,8 @@ function Button({
 			backgroundColor={backgroundColor}
 			borderColor={borderColor}
 			variant={variant}
-			shape={shape}
+			btnShape={shape}
+			onClick={onClick}
 			{...otherProps}
 		>
 			{children}

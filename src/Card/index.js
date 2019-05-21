@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Image from '../Image/Image';
+import Image from '../Image';
 import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeValue';
 
 const Wrapper = styled.div`

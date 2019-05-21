@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeValue';
-
 const Container = styled.div`
 	display: inline-block;
 
@@ -20,14 +18,13 @@ const Input = styled.input`
 	display: inline-block;
 
 	height: 34px;
-	/* width: ${({ width }) => getComputedStyleAttributeValue(width, 'auto')}; */
 	width: 100%;
-	/* width: ${({ width }) => width}; */
 	padding: ${({ variant }) => (variant === 'boxed' ? '8px' : '0')};
 
 	outline: 0;
 
-	:hover, :focus {
+	:hover,
+	:focus {
 		border-color: #a2a8af;
 	}
 
@@ -54,7 +51,6 @@ const Label = styled.label`
 	bottom: ${({ variant }) => (variant === 'boxed' ? '13px' : '7px')};
 	left: 0;
 
-	/* font-size: ${({ variant }) => (variant === 'boxed' ? '12px' : '14px')}; */
 	font-size: ${({ variant, isActive }) =>
 		isActive || variant === 'boxed' ? '12px' : '14px'};
 	font-weight: ${({ variant, isActive }) =>
@@ -64,7 +60,6 @@ const Label = styled.label`
 			return '#d3d3d3';
 		} else {
 			return isActive ? theme.primaryColor : '#9f9396';
-			// return isActive && variant !== 'boxed' ? theme.primaryColor : '#9f9396';
 		}
 	}};
 
@@ -72,20 +67,18 @@ const Label = styled.label`
 		${({ isActive, variant }) =>
 			isActive || variant === 'boxed' ? '-24px' : '0px'}
 	);
-	transition: transform 0.15s ease 0s, font-size 0.15s ease 0s, font-weight 0.075s ease 0s;
+	transition: transform 0.15s ease 0s, font-size 0.15s ease 0s,
+		font-weight 0.075s ease 0s;
 	cursor: text;
 
 	pointer-events: ${({ disabled }) => (disabled ? 'none' : 'default')};
 
 	${Input}:focus + & {
 		font-size: 12px;
-		/* font-weight: bolder; */
-		font-weight: ${({ variant }) => (variant === 'boxed' ? 'normal' : 'bolder')};
-		
+		font-weight: ${({ variant }) =>
+			variant === 'boxed' ? 'normal' : 'bolder'};
 
 		color: ${({ theme }) => theme.primaryColor};
-		/* color: ${({ theme, variant }) =>
-			variant === 'boxed' ? '#9f9396' : theme.primaryColor}; */
 
 		transform: translateY(-24px);
 	}

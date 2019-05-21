@@ -1,12 +1,32 @@
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-	.BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+// 	.BundleAnalyzerPlugin;
 
 const path = require('path');
+const fs = require('fs');
+
+const exclusions = ['.eslintrc', 'index.js', 'test.js', 'styles.css', 'utils'];
+
+const componentNames = fs
+	.readdirSync('./src')
+	.filter(name => exclusions.indexOf(name) === -1);
+
+const entryPoints = componentNames.reduce(
+	(acc, componentName) => {
+		return {
+			...acc,
+			[`${componentName}/index`]: `./src/${componentName}/index.js`
+		};
+	},
+	{
+		index: './src/index.js'
+	}
+);
+
 module.exports = {
-	entry: './src/index.js',
+	entry: entryPoints,
 	output: {
 		path: path.resolve(__dirname, 'build'),
-		filename: 'index.js',
+		filename: '[name].js',
 		libraryTarget: 'commonjs2' // THIS IS THE MOST IMPORTANT LINE! :mindblow: I wasted more than 2 days until realize this was the line most important in all this guide.
 	},
 	module: {
@@ -14,17 +34,15 @@ module.exports = {
 			{
 				test: /\.jsx?$/,
 				include: path.resolve(__dirname, 'src'),
-				exclude: /(node_modules|bower_components|build)/,
+				exclude: /(node_modules|build)/,
 				use: {
-					loader: 'babel-loader',
-					options: {
-						presets: ['env']
-					}
+					loader: 'babel-loader'
 				}
 			}
 		]
 	},
-	plugins: [new BundleAnalyzerPlugin()],
+	// plugins: [new BundleAnalyzerPlugin()],
+	plugins: [],
 	externals: {
 		react: {
 			commonjs: 'react',

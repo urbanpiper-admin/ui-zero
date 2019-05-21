@@ -1,25 +1,28 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Button from '../../Button/Button';
-import Card from '../../Card/Card';
-import Counter from '../../Counter/Counter';
+import Button from '../Button';
+import Card from '../Card';
+import Counter from '../Counter';
 
 const CardHeader = styled.div`
 	display: inline-block;
+	white-space: nowrap;
 
 	overflow: hidden;
+	text-overflow: ellipsis;
 
 	width: 100%;
 	margin: 10px 0 0;
 
-	white-space: nowrap;
-	text-overflow: ellipsis;
 	font-weight: bolder;
 	font-size: 16px;
 `;
 
 const CardBody = styled.p`
+	overflow: hidden;
+
+	height: 38px;
 	margin: 5px 0 20px;
 
 	font-weight: lighter;
@@ -132,7 +135,6 @@ export default function UPCard({
 						<CardCounter
 							width="110px"
 							primaryColor={primaryColor}
-							useCarets
 							onIncrement={onItemQtyIncrease}
 							onDecrement={onItemQtyDecrease}
 						>

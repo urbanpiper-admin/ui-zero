@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import Anchor from '../Anchor/Anchor';
-import Button from '../Button/Button';
-import Modal from '../Modal/Modal';
-import TextField from '../TextField/TextField';
+import Anchor from '../Anchor';
+import Button from '../Button';
+import Modal from '../Modal';
+import TextField from '../TextField';
 import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeValue';
 
 const Header = styled.div`

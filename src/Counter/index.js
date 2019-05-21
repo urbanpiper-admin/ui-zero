@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Button from '../Button/Button';
+import Button from '../Button';
 import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeValue';
 
 const Wrapper = styled.div`
