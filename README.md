@@ -6,6 +6,6 @@ Urbanpiper UI Library (React)
 
 ### Installation
 
-`npm install ui-zero styled-components`
+`npm install ui-zero`
 
 Documentation / Demo Link: https://compassionate-lalande-c3d289.netlify.com/
