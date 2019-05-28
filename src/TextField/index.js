@@ -93,7 +93,7 @@ class TextField extends Component {
 		super(props);
 
 		this.state = {
-			inputValue: props.input || ''
+			inputValue: props.value || ''
 		};
 
 		this.inputChangeHandler = this.inputChangeHandler.bind(this);
