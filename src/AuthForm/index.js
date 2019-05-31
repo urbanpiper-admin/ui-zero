@@ -5,7 +5,6 @@ import Anchor from '../Anchor';
 import Button from '../Button';
 import Modal from '../Modal';
 import TextField from '../TextField';
-import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeValue';
 
 const Header = styled.div`
 	padding: 20px;
@@ -44,12 +43,12 @@ const ModalAnchor = styled(Anchor)`
 const Centered = styled.div`
 	display: inline-block;
 
-	width: ${({ width }) => getComputedStyleAttributeValue(width, '50%')};
+	width: ${({ width }) => width || '50%'};
 
 	text-align: center;
 
 	@media (max-width: 600px) {
-		width: ${({ smWidth }) => getComputedStyleAttributeValue(smWidth, '100%')};
+		width: ${({ smWidth }) => smWidth || '100%'};
 		${({ smPadding }) => (smPadding ? `padding: ${smPadding}` : '')}
 	}
 `;
@@ -95,24 +94,30 @@ const CheckMessage = styled.span`
 `;
 
 export default class AuthForm extends Component {
-	static getDerivedStateFromProps(props, state) {
-		if (props.stage && props.stage !== state.stage && !state.isLocalChange) {
-			return {
-				stage: props.stage
-			};
-		}
+	// static getDerivedStateFromProps(props, state) {
+	// 	console.log('update', props, state);
 
-		return {
-			isLocalChange: false
-		};
-	}
+	// 	if (props.stage !== state.stage) {
+	// 		// if (props.stage && props.stage !== state.stage) {
+	// 		return {
+	// 			stage: props.stage
+	// 			// isLocalChange: false
+	// 		};
+	// 	}
+
+	// 	return {};
+
+	// 	return {
+	// 		isLocalChange: false
+	// 	};
+	// }
 
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			// stage: 'login' | 'signup' | 'forgot' | 'reset' | 'guest'
-			stage: props.stage || 'reset',
+			// stage: 'login' | 'signup' | 'verify' | 'reset' | 'guest'
+			stage: props.stage || 'login',
 
 			phone: '',
 			name: '',
@@ -155,7 +160,8 @@ export default class AuthForm extends Component {
 	}
 
 	getHeaderMessage() {
-		const { stage } = this.state;
+		// const { stage } = this.state;
+		const { stage } = this.props;
 
 		switch (stage) {
 			case 'login':
@@ -164,20 +170,31 @@ export default class AuthForm extends Component {
 				return 'Create new account';
 			case 'guest':
 				return 'Continue as guest';
-			default:
+			case 'verify':
+				return 'Verify phone';
+			case 'phone':
+				return 'Enter your phone number';
+			case 'reset':
 				return 'Reset your password';
+			default:
+				return 'Error occured';
 		}
 	}
 
 	getButtonText() {
-		const { stage } = this.state;
+		// const { stage } = this.state;
+		const { stage } = this.props;
 
 		switch (stage) {
 			case 'login':
 				return 'Sign in';
 			case 'signup':
 				return 'Sign up';
-			case 'forgot':
+			case 'verify':
+				return 'Submit OTP';
+			// case 'forgot':
+			// 	return 'Send OTP';
+			case 'phone':
 				return 'Send OTP';
 			case 'reset':
 				return 'Reset password';
@@ -201,12 +218,16 @@ export default class AuthForm extends Component {
 	}
 
 	stageChangeClickHandler(event, newStage) {
+		const { onStageChange } = this.props;
+
 		event.preventDefault();
 
-		this.setState({
-			stage: newStage,
-			isLocalChange: true
-		});
+		onStageChange(event, newStage);
+
+		// this.setState({
+		// 	stage: newStage,
+		// 	isLocalChange: true
+		// });
 	}
 
 	inputChangeHandler(event, type) {
@@ -224,9 +245,11 @@ export default class AuthForm extends Component {
 			onResetPassword,
 			onLogin,
 			onSignUp,
-			onGuestCheckout
+			onVerify,
+			onGuestCheckout,
+			stage
 		} = this.props;
-		const { stage, phone, name, email, password, otp } = this.state;
+		const { phone, name, email, password, otp } = this.state;
 
 		switch (stage) {
 			case 'login':
@@ -237,20 +260,26 @@ export default class AuthForm extends Component {
 				break;
 
 			case 'signup':
-				this.runIfPasswordsMatch(() =>
+				this.runIfPasswordsMatch(() => {
 					onSignUp({
 						phone,
 						name,
 						email,
 						password
-					})
-				);
-
+					});
+				});
 				break;
 
-			case 'forgot':
+			// case 'forgot':
+			case 'phone':
 				onSendOTP({
 					phone
+				});
+				break;
+
+			case 'verify':
+				onVerify({
+					otp
 				});
 				break;
 
@@ -260,10 +289,7 @@ export default class AuthForm extends Component {
 						otp,
 						password
 					});
-
-					this.resetFormFields();
 				});
-
 				break;
 
 			case 'guest':
@@ -276,6 +302,8 @@ export default class AuthForm extends Component {
 			default:
 				return 'Unknown error';
 		}
+
+		this.resetFormFields();
 	}
 
 	formCloseHandler(event) {
@@ -292,6 +320,8 @@ export default class AuthForm extends Component {
 			secondaryColor = 'white',
 			visible,
 			onSendOTP,
+			onVerify,
+			stage,
 			onResetPassword,
 			onLogin,
 			onSignUp,
@@ -301,12 +331,14 @@ export default class AuthForm extends Component {
 			disableGuestCheckout = false,
 			onGuestCheckout,
 			onClose,
+			onStageChange,
 			socialImageSrc1,
 			socialImageSrc2,
 			...otherProps
 		} = this.props;
+
 		const {
-			stage,
+			// stage,
 			phone,
 			name,
 			email,
@@ -374,7 +406,8 @@ export default class AuthForm extends Component {
 								/>
 							</ContainerItem>
 						) : null}
-						{stage === 'reset' ? (
+
+						{stage === 'reset' || stage === 'verify' ? (
 							<ContainerItem>
 								<TextField
 									disabled={!visible}
@@ -392,7 +425,6 @@ export default class AuthForm extends Component {
 									disabled={!visible}
 									required
 									type="tel"
-									maxLength="10"
 									width="100%"
 									// placeholder="Phone"
 									label="Phone"
@@ -429,7 +461,7 @@ export default class AuthForm extends Component {
 								</ContainerItem>
 							</React.Fragment>
 						) : null}
-						{stage !== 'forgot' && stage !== 'guest' ? (
+						{stage === 'login' || stage === 'signup' || stage === 'reset' ? (
 							<ContainerItem>
 								<TextField
 									disabled={!visible}
@@ -467,7 +499,7 @@ export default class AuthForm extends Component {
 										disabled={!visible}
 										href="#"
 										onClick={event =>
-											this.stageChangeClickHandler(event, 'forgot')
+											this.stageChangeClickHandler(event, 'phone')
 										}
 									>
 										Forgot Password?

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -23,8 +23,8 @@ const Input = styled.input`
 
 	outline: 0;
 
-	:hover,
-	:focus {
+	&:hover,
+	&:focus {
 		border-color: #a2a8af;
 	}
 
@@ -40,7 +40,7 @@ const Input = styled.input`
 
 	font-size: 14px;
 
-	:disabled {
+	&:disabled {
 		background-color: rgba(216, 216, 216, 0.2);
 		border-width: 0px;
 	}
@@ -88,69 +88,55 @@ const WarningMessage = styled.span`
 	color: #ec530a;
 `;
 
-class TextField extends Component {
-	constructor(props) {
-		super(props);
+const TextField = ({
+	value,
+	onChange,
+	width = 'auto',
+	label,
+	warning,
+	disabled: isDisabled,
+	variant,
+	...otherProps
+}) => {
+	// const [inputValue, setInputValue] = useState(value);
 
-		this.state = {
-			inputValue: props.value || ''
-		};
+	// useEffect(() => {
+	// 	setInputValue(value);
+	// }, [value]);
 
-		this.inputChangeHandler = this.inputChangeHandler.bind(this);
-		this.labelClickHandler = this.labelClickHandler.bind(this);
-	}
+	// const inputChangeHandler = event => {
+	// 	onChange(event);
 
-	inputChangeHandler(event) {
-		this.setState({
-			inputValue: event.target.value
-		});
+	// 	setInputValue(event.target.value);
+	// };
 
-		const { onChange: receivedOnChange } = this.props;
-
-		if (receivedOnChange) {
-			receivedOnChange(event);
-		}
-	}
-
-	labelClickHandler(event) {
+	const labelClickHandler = event => {
 		event.currentTarget.previousSibling.focus();
-	}
+	};
 
-	render() {
-		const {
-			width = 'auto',
-			label,
-			warning,
-			disabled: isDisabled,
-			variant,
-			...otherProps
-		} = this.props;
-		const { inputValue } = this.state;
+	const disabled = isDisabled ? { disabled: true } : {};
 
-		const disabled = isDisabled ? { disabled: true } : {};
+	return (
+		<Container inputWidth={width}>
+			<Input
+				{...disabled}
+				{...otherProps}
+				variant={variant}
+				value={value}
+				onChange={onChange}
+			/>
 
-		return (
-			<Container inputWidth={width}>
-				<Input
-					{...disabled}
-					{...otherProps}
-					variant={variant}
-					value={inputValue}
-					onChange={this.inputChangeHandler}
-				/>
-
-				<Label
-					variant={variant}
-					onClick={this.labelClickHandler}
-					isActive={inputValue !== ''}
-					{...disabled}
-				>
-					{label}
-					{warning ? <WarningMessage> ({warning})</WarningMessage> : null}
-				</Label>
-			</Container>
-		);
-	}
-}
+			<Label
+				variant={variant}
+				onClick={labelClickHandler}
+				isActive={value}
+				{...disabled}
+			>
+				{label}
+				{warning ? <WarningMessage> ({warning})</WarningMessage> : null}
+			</Label>
+		</Container>
+	);
+};
 
 export default TextField;

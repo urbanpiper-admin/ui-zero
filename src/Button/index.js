@@ -45,8 +45,7 @@ function Button({
 	children,
 	backgroundColor,
 	borderColor,
-	onClick = event =>
-		console.warn('onClick listener not attached to clicked button'),
+	onClick = event => {},
 	...otherProps
 }) {
 	return (
