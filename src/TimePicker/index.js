@@ -190,6 +190,11 @@ class TimePicker extends Component {
 	}
 
 	changeTimeHandler(event, segment, segmentValue) {
+		const {onTimeChange} = this.props;
+		const { hour, minute, second, unit } = this.state;
+
+		onTimeChange({ hour, minute, second, unit });
+		
 		this.setState({
 			[segment]: segmentValue
 		});
