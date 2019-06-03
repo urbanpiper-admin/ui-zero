@@ -20,6 +20,8 @@ export { default as Navbar } from './Navbar';
 
 export { default as RadioButton } from './RadioButton';
 
+export { default as Shimmer } from './Shimmer';
+
 export { default as SideNav } from './SideNav';
 
 export { default as Switch } from './Switch';

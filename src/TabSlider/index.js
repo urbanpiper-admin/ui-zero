@@ -239,17 +239,15 @@ export default class TabSlider extends Component {
 
 		const tabBounds = hoveredTab.getBoundingClientRect();
 
+		const parentLeft = hoveredTab.parentElement.parentElement.getBoundingClientRect()
+			.left;
+
 		this.setState({
 			showOptions: true,
 			focussedTabLeft:
-				tabBounds.left -
-					hoveredTab.parentElement.parentElement.getBoundingClientRect().left <
-				0
+				tabBounds.left - parentLeft < 0
 					? 0
-					: tabBounds.left -
-					  hoveredTab.parentElement.parentElement.getBoundingClientRect()
-							.left +
-					  tabBounds.width / 2
+					: tabBounds.left - parentLeft + tabBounds.width / 2
 		});
 	}
 
