@@ -34,6 +34,8 @@ export { default as TextArea } from './TextArea';
 
 export { default as TextField } from './TextField';
 
+export { default as TimePicker } from './TimePicker';
+
 export { default as UIZeroThemeProvider } from './UIZeroThemeProvider';
 
 export { default as UPCard } from './UPCard';
