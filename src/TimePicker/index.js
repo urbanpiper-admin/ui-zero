@@ -172,6 +172,8 @@ class TimePicker extends Component {
 
 		this.parseTimeUnit = this.parseTimeUnit.bind(this);
 		this.changeTimeHandler = this.changeTimeHandler.bind(this);
+		this.getValidHours = this.getValidHours.bind(this);
+		this.range = this.range.bind(this);
 
 		this.hourPickerRef = React.createRef();
 		this.minutePickerRef = React.createRef();
@@ -190,19 +192,50 @@ class TimePicker extends Component {
 	}
 
 	changeTimeHandler(event, segment, segmentValue) {
-		const {onTimeChange} = this.props;
+		const { onTimeChange } = this.props;
 		const { hour, minute, second, unit } = this.state;
 
-		onTimeChange({ hour, minute, second, unit });
-		
+		if (onTimeChange) {
+			onTimeChange({ hour, minute, second, unit });
+		}
+
 		this.setState({
 			[segment]: segmentValue
 		});
 	}
 
+	range(startAt, endAt) {
+		return [...Array(endAt - startAt).keys()].map(index => index + startAt);
+	}
+
+	getValidHours(startTime, endTime) {
+		const { hour, second, minute, unit } = this.state;
+
+		if (startTime.unit === endTime.unit) {
+			return this.range(startTime.hour, endTime.hour + 1);
+		} else if (startTime.unit === 'am' && endTime.unit === 'pm') {
+			if (unit === 'am') {
+				return this.range(startTime.hour, 12);
+			} else if (unit === 'pm') {
+				return this.range(0, endTime.hour + 1);
+			}
+
+			return this.range(0, 12);
+		}
+	}
+
 	render() {
-		const { hideHour, hideMinute, hideSecond, hideUnit } = this.props;
+		const {
+			hideHour,
+			hideMinute,
+			hideSecond,
+			hideUnit,
+			startTime = { hour: 0, minute: 0, second: 0, unit: 'am' },
+			endTime = { hour: 11, minute: 59, second: 59, unit: 'pm' }
+		} = this.props;
 		const { hour, minute, second, unit } = this.state;
+
+		// console.log(this.getValidHours(startTime, endTime));
 
 		return (
 			<TimePickerElement>

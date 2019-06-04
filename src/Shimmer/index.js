@@ -14,6 +14,7 @@ const Animation = keyframes`
 const ShimmerElement = styled.div`
 	height: ${({ shimmerHeight }) => shimmerHeight};
 	width: ${({ shimmerWidth }) => shimmerWidth};
+	margin: ${({ shimmerMargin }) => shimmerMargin};
 
 	background: #f6f6f6;
 
@@ -32,11 +33,17 @@ const ShimmerElement = styled.div`
 	animation: ${Animation} 1s ease 0s forwards infinite;
 `;
 
-function Shimmer({ height = '30px', width = '50%', ...otherProps }) {
+function Shimmer({
+	height = '30px',
+	width = '50%',
+	margin = '0',
+	...otherProps
+}) {
 	return (
 		<ShimmerElement
 			shimmerHeight={height}
 			shimmerWidth={width}
+			shimmerMargin={margin}
 			{...otherProps}
 		/>
 	);

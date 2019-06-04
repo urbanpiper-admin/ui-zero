@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeValue';
-
 const ModalBG = styled.div`
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: ${({ zIndex }) => getComputedStyleAttributeValue(zIndex, '10000')};
+	z-index: ${({ zIndex }) => '10000'};
 
 	height: 100vh;
 	width: 100vw;
@@ -54,30 +52,27 @@ const ModalContent = styled.div`
 	position: fixed;
 	top: 50%;
 	${({ align, modalWidth, showModal }) => {
-		const width = getComputedStyleAttributeValue(modalWidth, '400px');
-
 		switch (align) {
 			case 'left':
-				return `left: -${width};`;
+				return `left: -${modalWidth};`;
 			// return `left: -${showModal ? '0' : width}`;
 			case 'right':
-				return `right: -${width};`;
+				return `right: -${modalWidth};`;
 			// return `right: -${showModal ? '0' : width}`;
 			default:
-				return `left: ${showModal ? '50%' : `-${width}`}`;
+				return `left: ${showModal ? '50%' : `-${modalWidth}`}`;
 		}
 	}}
-	z-index: ${({ zIndex }) => getComputedStyleAttributeValue(zIndex, '10000')};
+	z-index: ${({ zIndex }) => zIndex};
 	overflow: auto;
 
-	height: ${({ modalHeight, align }) =>
-		getComputedStyleAttributeValue(modalHeight, 'auto')};
+	height: ${({ modalHeight, align }) => modalHeight};
 	max-height: ${({ align }) =>
 		align === 'left' || align === 'right' ? '100%' : '90%'};
-	width: ${({ modalWidth }) =>
-		getComputedStyleAttributeValue(modalWidth, '400px')};
+	width: ${({ modalWidth }) => modalWidth};
 	max-width: ${({ align }) =>
 		align === 'left' || align === 'right' ? '100%' : '90%'};
+	border-radius: 5px;
 
 	background-color: white;
 	box-shadow: 0 0 10px 0 hsla(0, 0%, 0%, 0.3);
@@ -141,9 +136,9 @@ export default class Modal extends Component {
 			children,
 			align,
 			showModal,
-			height,
-			width,
-			zIndex,
+			height = 'auto',
+			width = '400px',
+			zIndex = '10000',
 			sliding,
 			onClose,
 			...otherProps

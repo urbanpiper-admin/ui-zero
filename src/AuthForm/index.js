@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import Anchor from '../Anchor';
 import Button from '../Button';
@@ -16,7 +16,36 @@ const Header = styled.div`
 `;
 
 const Body = styled.div`
+	position: relative;
+
 	background-color: ${({ theme, secondaryColor }) => secondaryColor};
+`;
+
+const ProgressAnimation = keyframes`
+	from {
+		transform: scaleX(0);
+	}
+
+	to {
+		transform: scaleX(1);
+	}
+`;
+
+const ProgressBar = styled.div`
+	position: absolute;
+	top: 1px;
+	left: 0;
+
+	height: 5px;
+	width: 100%;
+
+	background-color: ${({ theme, backgroundColor }) =>
+		backgroundColor || theme.backgroundColor};
+
+	transform: scaleX(0);
+	transform-origin: left;
+
+	animation: ${ProgressAnimation} 2s ease 0s forwards infinite;
 `;
 
 const Form = styled.form`
@@ -44,6 +73,7 @@ const Centered = styled.div`
 	display: inline-block;
 
 	width: ${({ width }) => width || '50%'};
+	${({ padding }) => (padding ? `padding: ${padding};` : '')};
 
 	text-align: center;
 
@@ -93,6 +123,15 @@ const CheckMessage = styled.span`
 	color: #bfbfbf;
 `;
 
+const ErrorMessage = styled.div`
+	padding: 20px;
+	border-top: 5px solid #ec530a;
+
+	text-align: center;
+	font-size: 16px;
+	color: #ec530a;
+`;
+
 export default class AuthForm extends Component {
 	// static getDerivedStateFromProps(props, state) {
 	// 	console.log('update', props, state);
@@ -125,7 +164,7 @@ export default class AuthForm extends Component {
 			password: '',
 			confirmPassword: '',
 			otp: '',
-			isLocalChange: false,
+			// isLocalChange: false,
 
 			passwordMatchFail: false
 		};
@@ -139,6 +178,7 @@ export default class AuthForm extends Component {
 		this.inputChangeHandler = this.inputChangeHandler.bind(this);
 		this.formSubmitHandler = this.formSubmitHandler.bind(this);
 		this.formCloseHandler = this.formCloseHandler.bind(this);
+		this.resendOTPHandler = this.resendOTPHandler.bind(this);
 	}
 
 	runIfPasswordsMatch(onMatch) {
@@ -279,6 +319,7 @@ export default class AuthForm extends Component {
 
 			case 'verify':
 				onVerify({
+					phone,
 					otp
 				});
 				break;
@@ -303,7 +344,7 @@ export default class AuthForm extends Component {
 				return 'Unknown error';
 		}
 
-		this.resetFormFields();
+		// this.resetFormFields();
 	}
 
 	formCloseHandler(event) {
@@ -312,6 +353,15 @@ export default class AuthForm extends Component {
 		this.resetFormFields();
 
 		onClose();
+	}
+
+	resendOTPHandler(event) {
+		const { onResendOTP } = this.props;
+		const { phone } = this.state;
+
+		event.preventDefault();
+
+		onResendOTP({ phone });
 	}
 
 	render() {
@@ -331,9 +381,15 @@ export default class AuthForm extends Component {
 			disableGuestCheckout = false,
 			onGuestCheckout,
 			onClose,
+			onCloseError,
+			onResendOTP,
 			onStageChange,
 			socialImageSrc1,
 			socialImageSrc2,
+			loading,
+			disabled,
+			error,
+			showError,
 			...otherProps
 		} = this.props;
 
@@ -348,96 +404,61 @@ export default class AuthForm extends Component {
 			passwordMatchFail
 		} = this.state;
 
+		const disableActions = !visible || disabled;
+
 		return (
-			<Modal
-				showModal={visible}
-				onClose={this.formCloseHandler}
-				{...otherProps}
-			>
-				<Header primaryColor={primaryColor} secondaryColor={secondaryColor}>
-					{this.getHeaderMessage()}
-				</Header>
-				<Body onSubmit={this.formSubmitHandler}>
-					{!disableSocialLogin && (stage === 'login' || stage === 'signup') ? (
-						<SocialContainer>
-							<Centered smWidth="50%">
-								<div>
+			<React.Fragment>
+				<Modal
+					showModal={visible}
+					onClose={this.formCloseHandler}
+					{...otherProps}
+				>
+					<Header primaryColor={primaryColor} secondaryColor={secondaryColor}>
+						{this.getHeaderMessage()}
+					</Header>
+					<Body onSubmit={this.formSubmitHandler}>
+						{loading ? <ProgressBar backgroundColor={primaryColor} /> : null}
+						{!disableSocialLogin &&
+						(stage === 'login' || stage === 'signup') ? (
+							<SocialContainer>
+								<Centered smWidth="50%">
+									<div>
+										<SocialButton
+											width="80%"
+											borderColor="transparent"
+											onClick={onSocialLogin1}
+											disabled={disableActions}
+										>
+											<img
+												src={socialImageSrc1}
+												alt="social login 1"
+												width="100%"
+											/>
+										</SocialButton>
+									</div>
+								</Centered>
+								<Centered smWidth="50%">
 									<SocialButton
 										width="80%"
 										borderColor="transparent"
-										onClick={onSocialLogin1}
+										onClick={onSocialLogin2}
+										disabled={disableActions}
 									>
 										<img
-											src={socialImageSrc1}
-											alt="social login 1"
+											src={socialImageSrc2}
+											alt="social login 2"
 											width="100%"
 										/>
 									</SocialButton>
-								</div>
-							</Centered>
-							<Centered smWidth="50%">
-								<SocialButton
-									width="80%"
-									borderColor="transparent"
-									onClick={onSocialLogin2}
-								>
-									<img
-										src={socialImageSrc2}
-										alt="social login 2"
-										width="100%"
-									/>
-								</SocialButton>
-							</Centered>
-						</SocialContainer>
-					) : null}
-					<Form>
-						{/* TODO: Remove repetitive code. */}
-						{stage === 'guest' ? (
-							<ContainerItem>
-								<TextField
-									disabled={!visible}
-									required
-									type="text"
-									width="100%"
-									// placeholder="Name"
-									label="Name"
-									value={name}
-									onChange={event => this.inputChangeHandler(event, 'name')}
-								/>
-							</ContainerItem>
+								</Centered>
+							</SocialContainer>
 						) : null}
-
-						{stage === 'reset' || stage === 'verify' ? (
-							<ContainerItem>
-								<TextField
-									disabled={!visible}
-									required
-									width="100%"
-									// placeholder="OTP"
-									label="OTP"
-									value={otp}
-									onChange={event => this.inputChangeHandler(event, 'otp')}
-								/>
-							</ContainerItem>
-						) : (
-							<ContainerItem>
-								<TextField
-									disabled={!visible}
-									required
-									type="tel"
-									width="100%"
-									// placeholder="Phone"
-									label="Phone"
-									value={phone}
-									onChange={event => this.inputChangeHandler(event, 'phone')}
-								/>
-							</ContainerItem>
-						)}
-						{stage === 'signup' ? (
-							<React.Fragment>
+						<Form>
+							{/* TODO: Remove repetitive code. */}
+							{stage === 'guest' ? (
 								<ContainerItem>
 									<TextField
-										disabled={!visible}
+										disabled={disableActions}
 										required
 										type="text"
 										width="100%"
@@ -447,126 +468,192 @@ export default class AuthForm extends Component {
 										onChange={event => this.inputChangeHandler(event, 'name')}
 									/>
 								</ContainerItem>
+							) : null}
+
+							{stage === 'reset' || stage === 'verify' ? (
 								<ContainerItem>
 									<TextField
-										disabled={!visible}
+										disabled={disableActions}
 										required
-										type="email"
 										width="100%"
-										// placeholder="Email"
-										label="Email"
-										value={email}
-										onChange={event => this.inputChangeHandler(event, 'email')}
+										// placeholder="OTP"
+										label="OTP"
+										value={otp}
+										onChange={event => this.inputChangeHandler(event, 'otp')}
 									/>
 								</ContainerItem>
-							</React.Fragment>
-						) : null}
-						{stage === 'login' || stage === 'signup' || stage === 'reset' ? (
+							) : (
+								<ContainerItem>
+									<TextField
+										disabled={disableActions}
+										required
+										type="tel"
+										width="100%"
+										// placeholder="Phone"
+										label="Phone"
+										value={phone}
+										onChange={event => this.inputChangeHandler(event, 'phone')}
+									/>
+								</ContainerItem>
+							)}
+							{stage === 'signup' ? (
+								<React.Fragment>
+									<ContainerItem>
+										<TextField
+											disabled={disableActions}
+											required
+											type="text"
+											width="100%"
+											// placeholder="Name"
+											label="Name"
+											value={name}
+											onChange={event => this.inputChangeHandler(event, 'name')}
+										/>
+									</ContainerItem>
+									<ContainerItem>
+										<TextField
+											disabled={disableActions}
+											required
+											type="email"
+											width="100%"
+											// placeholder="Email"
+											label="Email"
+											value={email}
+											onChange={event =>
+												this.inputChangeHandler(event, 'email')
+											}
+										/>
+									</ContainerItem>
+								</React.Fragment>
+							) : null}
+							{stage === 'login' || stage === 'signup' || stage === 'reset' ? (
+								<ContainerItem>
+									<TextField
+										disabled={disableActions}
+										required
+										type="password"
+										width="100%"
+										// placeholder={stage === 'reset' ? 'New password' : 'Password'}
+										label={stage === 'reset' ? 'New password' : 'Password'}
+										value={password}
+										onChange={event =>
+											this.inputChangeHandler(event, 'password')
+										}
+									/>
+								</ContainerItem>
+							) : null}
+							{stage === 'signup' || stage === 'reset' ? (
+								<ContainerItem>
+									<TextField
+										disabled={disableActions}
+										required
+										type="password"
+										width="100%"
+										// placeholder="Confirm Password"
+										label="Confirm Password"
+										warning={passwordMatchFail ? "Passwords don't match" : ''}
+										value={confirmPassword}
+										onChange={event =>
+											this.inputChangeHandler(event, 'confirmPassword')
+										}
+									/>
+								</ContainerItem>
+							) : null}
 							<ContainerItem>
-								<TextField
-									disabled={!visible}
-									required
-									type="password"
-									width="100%"
-									// placeholder={stage === 'reset' ? 'New password' : 'Password'}
-									label={stage === 'reset' ? 'New password' : 'Password'}
-									value={password}
-									onChange={event => this.inputChangeHandler(event, 'password')}
-								/>
+								{stage === 'login' ||
+								stage === 'verify' ||
+								stage === 'reset' ? (
+									<Centered
+										width={
+											stage === 'verify' || stage === 'reset' ? '100%' : ''
+										}
+										padding="0 0 10px"
+									>
+										<ModalAnchor
+											disabled={disableActions}
+											href="#"
+											onClick={event =>
+												stage === 'verify' || stage === 'reset'
+													? this.resendOTPHandler(event)
+													: this.stageChangeClickHandler(event, 'phone')
+											}
+										>
+											{stage === 'verify' || stage === 'reset'
+												? 'Resend OTP'
+												: 'Forgot Password?'}
+										</ModalAnchor>
+									</Centered>
+								) : null}
+								<Centered width={stage !== 'login' ? '100%' : ''}>
+									<ModalButton
+										disabled={disableActions}
+										width="100%"
+										variant="fill"
+										backgroundColor={primaryColor}
+										color={secondaryColor}
+									>
+										{this.getButtonText()}
+									</ModalButton>
+								</Centered>
 							</ContainerItem>
-						) : null}
-						{stage === 'signup' || stage === 'reset' ? (
 							<ContainerItem>
-								<TextField
-									disabled={!visible}
-									required
-									type="password"
-									width="100%"
-									// placeholder="Confirm Password"
-									label="Confirm Password"
-									warning={passwordMatchFail ? "Passwords don't match" : ''}
-									value={confirmPassword}
-									onChange={event =>
-										this.inputChangeHandler(event, 'confirmPassword')
-									}
-								/>
-							</ContainerItem>
-						) : null}
-						<ContainerItem>
-							{stage === 'login' ? (
-								<Centered smPadding="0 0 10px">
-									<ModalAnchor
-										disabled={!visible}
+								<Centered width="100%">
+									<CheckMessage>
+										{stage === 'login' ? "Don't have an account?" : 'Back to'}{' '}
+									</CheckMessage>
+									<Anchor
+										disabled={disableActions}
 										href="#"
 										onClick={event =>
-											this.stageChangeClickHandler(event, 'phone')
+											this.stageChangeClickHandler(
+												event,
+												stage === 'login' ? 'signup' : 'login'
+											)
 										}
 									>
-										Forgot Password?
-									</ModalAnchor>
+										{' '}
+										SIGN {stage === 'login' ? 'UP' : 'IN'}
+									</Anchor>
 								</Centered>
+							</ContainerItem>
+							{!disableGuestCheckout && stage === 'login' ? (
+								<React.Fragment>
+									<ContainerItem>
+										<Centered width="100%">
+											<OptionsSeparator>OR</OptionsSeparator>
+										</Centered>
+									</ContainerItem>
+									<ContainerItem>
+										<Button
+											disabled={disableActions}
+											width="100%"
+											backgroundColor={secondaryColor}
+											color="#9f9396"
+											borderColor="#9f9396"
+											styleOnHover={{
+												color: primaryColor,
+												'border-color': primaryColor
+											}}
+											onClick={event =>
+												this.stageChangeClickHandler(event, 'guest')
+											}
+										>
+											CONTINUE AS GUEST
+										</Button>
+									</ContainerItem>
+								</React.Fragment>
 							) : null}
-							<Centered width={stage !== 'login' ? '100%' : ''}>
-								<ModalButton
-									disabled={!visible}
-									width="100%"
-									variant="fill"
-									backgroundColor={primaryColor}
-									color={secondaryColor}
-								>
-									{this.getButtonText()}
-								</ModalButton>
-							</Centered>
-						</ContainerItem>
-						<ContainerItem>
-							<Centered width="100%">
-								<CheckMessage>
-									{stage === 'login' ? "Don't have an account?" : 'Back to'}{' '}
-								</CheckMessage>
-								<Anchor
-									disabled={!visible}
-									href="#"
-									onClick={event =>
-										this.stageChangeClickHandler(
-											event,
-											stage === 'login' ? 'signup' : 'login'
-										)
-									}
-								>
-									{' '}
-									SIGN {stage === 'login' ? 'UP' : 'IN'}
-								</Anchor>
-							</Centered>
-						</ContainerItem>
-						{!disableGuestCheckout && stage === 'login' ? (
-							<React.Fragment>
-								<ContainerItem>
-									<Centered width="100%">
-										<OptionsSeparator>OR</OptionsSeparator>
-									</Centered>
-								</ContainerItem>
-								<ContainerItem>
-									<Button
-										width="100%"
-										backgroundColor={secondaryColor}
-										color="#9f9396"
-										borderColor="#9f9396"
-										styleOnHover={{
-											color: primaryColor,
-											'border-color': primaryColor
-										}}
-										onClick={event =>
-											this.stageChangeClickHandler(event, 'guest')
-										}
-									>
-										CONTINUE AS GUEST
-									</Button>
-								</ContainerItem>
-							</React.Fragment>
-						) : null}
-					</Form>
-				</Body>
-			</Modal>
+						</Form>
+					</Body>
+				</Modal>
+				{showError ? (
+					<Modal width="450px" showModal onClose={onCloseError}>
+						<ErrorMessage>
+							{error || 'Something went wrong. Please try again.'}
+						</ErrorMessage>
+					</Modal>
+				) : null}
+			</React.Fragment>
 		);
 	}
 }
