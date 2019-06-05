@@ -424,7 +424,7 @@ export default class AuthForm extends Component {
 								<Centered smWidth="50%">
 									<div>
 										<SocialButton
-											width="80%"
+											width="75%"
 											borderColor="transparent"
 											onClick={onSocialLogin1}
 											disabled={disableActions}
@@ -439,7 +439,7 @@ export default class AuthForm extends Component {
 								</Centered>
 								<Centered smWidth="50%">
 									<SocialButton
-										width="80%"
+										width="75%"
 										borderColor="transparent"
 										onClick={onSocialLogin2}
 										disabled={disableActions}
