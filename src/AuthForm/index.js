@@ -62,7 +62,11 @@ const SocialButton = styled(Button)`
 `;
 
 const ContainerItem = styled.div`
-	padding: 15px 0;
+	padding: 7px 0;
+
+	&:first-child {
+		padding-top: 0;
+	}
 `;
 
 const ModalAnchor = styled(Anchor)`
@@ -102,16 +106,17 @@ const OptionsSeparator = styled.div`
 	}
 
 	::before {
-		margin: 0 10px 0 0;
+		margin: 0 15px 0 0;
 	}
 
 	::after {
-		margin: 0 0 0 10px;
+		margin: 0 0 0 15px;
 	}
 `;
 
 const ModalButton = styled(Button)`
 	width: 80%;
+	margin: 15px 0 10px;
 
 	@media (max-width: 600px) {
 		width: 100%;

@@ -1,31 +1,72 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
+const Container = styled.div`
+	&,
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	display: flex;
+	flex-wrap: wrap;
+
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: ${({ zIndex }) => zIndex || '10000'};
+	scrollbar-width: none;
+	&::-webkit-scrollbar {
+		display: none;
+	}
+	overflow-x: hidden;
+	overflow-y: auto;
+
+	height: 100%;
+	width: 100%;
+	padding: ${({ align, showModal }) =>
+		align === 'left' || align === 'right' ? '0' : '5vh 5%'};
+
+	> * {
+		${({ align }) => {
+			switch (align) {
+				case 'left':
+					return 'margin: auto auto auto 0';
+				case 'right':
+					return 'margin: auto 0 auto auto';
+				default:
+					return 'margin: auto';
+			}
+		}}
+	}
+
+	pointer-events: ${({ showModal }) => (showModal ? 'auto' : 'none')};
+`;
+
 const ModalBG = styled.div`
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: ${({ zIndex }) => '10000'};
+	z-index: ${({ zIndex }) => '-1'};
+	/* position: absolute;
+	top: 0;
+	left: 0; */
 
-	height: 100vh;
-	width: 100vw;
+	height: 100%;
+	width: 100%;
 
-	background-color: hsla(
-		0,
-		0%,
-		0%,
-		${({ showModal }) => (showModal ? '0.5' : '0')}
-	);
+	background-color: #000000;
+	opacity: ${({ showModal }) => (showModal ? '0.5' : '0')}
+	pointer-events: ${({ showModal }) => (showModal ? 'auto' : 'none')};
+	pointer-events: none;;
 
 	${({ sliding, showModal }) =>
-		`transform: translateX(${showModal ? '0' : '-100%'});
-    ${
-			sliding
-				? `
-				transition: background-color 0.3s ease 0s,
-					transform 0s ease ${showModal ? '0' : '0.3'}s;`
-				: ''
-		}`}
+		sliding
+			? `
+						transition: opacity 0.3s ease 0s;
+					`
+			: ''}
 `;
 
 const ModalContent = styled.div`
@@ -36,7 +77,7 @@ const ModalContent = styled.div`
   } 
 
 	
-	::-webkit-scrollbar {
+	/* ::-webkit-scrollbar {
 		width: 5px;
 	}
 
@@ -47,11 +88,12 @@ const ModalContent = styled.div`
 	::-webkit-scrollbar-thumb {
 		background-color: hsl(0, 0%, 50%);
 		outline: 1px solid hsl(210, 13%, 50%);
-	}
+	} */
 
-	position: fixed;
-	top: 50%;
-	${({ align, modalWidth, showModal }) => {
+	/* position: fixed; */
+	/* position: relative; */
+	/* top: 50%; */
+	/* ${({ align, modalWidth, showModal }) => {
 		switch (align) {
 			case 'left':
 				return `left: -${modalWidth};`;
@@ -62,55 +104,59 @@ const ModalContent = styled.div`
 			default:
 				return `left: ${showModal ? '50%' : `-${modalWidth}`}`;
 		}
-	}}
-	z-index: ${({ zIndex }) => zIndex};
-	overflow: auto;
+	}} */
+
+	
+	z-index: ${({ zIndex }) => '100'};
+	/* overflow: auto; */
 
 	height: ${({ modalHeight, align }) => modalHeight};
-	max-height: ${({ align }) =>
-		align === 'left' || align === 'right' ? '100%' : '90%'};
+	/* max-height: ${({ align }) =>
+		align === 'left' || align === 'right' ? '100%' : '90%'}; */
 	width: ${({ modalWidth }) => modalWidth};
-	max-width: ${({ align }) =>
-		align === 'left' || align === 'right' ? '100%' : '90%'};
+	/* max-width: ${({ align }) =>
+		align === 'left' || align === 'right' ? '100%' : '90%'}; */
+	${({ align, modalWidth }) => {
+		switch (align) {
+			case 'left':
+				// extra 5px to hide shadow
+				return `margin: auto auto auto 0; left: calc(-${modalWidth} - 5px);`;
+			case 'right':
+				return `margin: auto 0 auto auto; right: calc(-${modalWidth} - 5px);`;
+			default:
+				return 'margin: auto;';
+		}
+	}}
+
+	position: relative;
+	
 	border-radius: 5px;
 
 	background-color: white;
 	box-shadow: 0 0 10px 0 hsla(0, 0%, 0%, 0.3);
 
 	${({ align, sliding, showModal }) => {
-		let modalXTranslation = {
-			whenVisible: '',
-			whenHidden: ''
-		};
+		if (align !== 'left' && align !== 'right') {
+			return `
+								transform: translateX(${showModal ? '0' : '-200vw'});
+								${sliding ? 'transition: transform 0.3s ease 0s;' : ''}
+							`;
+		} else {
+			// align === 'right'
+			let transformStyles = '';
+			if (showModal) {
+				transformStyles = `transform: translateX(${
+					align === 'left' ? '100%' : '-100%'
+				});`;
+			} else {
+				transformStyles = '';
+			}
 
-		switch (align) {
-			case 'left':
-				modalXTranslation = {
-					whenVisible: '100%',
-					whenHidden: '0'
-				};
-				break;
-			case 'right':
-				modalXTranslation = {
-					whenVisible: '-100%',
-					whenHidden: '0'
-				};
-				break;
-			default:
-				modalXTranslation = {
-					whenVisible: '-50%',
-					whenHidden: '-100vw'
-				};
-				break;
+			return `
+								${transformStyles}
+								${sliding ? 'transition: transform 0.3s ease 0s;' : ''}
+							`;
 		}
-		return sliding
-			? `transform: translate(${
-					showModal
-						? modalXTranslation.whenVisible
-						: modalXTranslation.whenHidden
-			  }, -50%);
-				transition: transform 0.3s ease 0s, left 0.3s ease 0s;`
-			: 'transform: translate(-50%, -50%)';
 	}}
 `;
 
@@ -145,7 +191,12 @@ export default class Modal extends Component {
 		} = this.props;
 
 		return (
-			<div>
+			<Container
+				zIndex={zIndex}
+				align={align}
+				showModal={showModal}
+				onClick={onClose}
+			>
 				<ModalBG
 					zIndex={zIndex}
 					sliding={sliding}
@@ -159,11 +210,12 @@ export default class Modal extends Component {
 					align={align}
 					sliding={sliding}
 					showModal={showModal}
+					onClick={event => event.stopPropagation()}
 					{...otherProps}
 				>
 					{children}
 				</ModalContent>
-			</div>
+			</Container>
 		);
 	}
 
