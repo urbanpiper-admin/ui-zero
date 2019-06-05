@@ -40,7 +40,7 @@ const ProgressBar = styled.div`
 	width: 100%;
 
 	background-color: ${({ theme, backgroundColor }) =>
-		backgroundColor || theme.backgroundColor};
+		backgroundColor || theme.primaryColor};
 
 	transform: scaleX(0);
 	transform-origin: left;
