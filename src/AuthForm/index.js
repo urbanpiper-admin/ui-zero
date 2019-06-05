@@ -357,7 +357,9 @@ export default class AuthForm extends Component {
 
 		this.resetFormFields();
 
-		onClose();
+		if (onClose) {
+			onClose();
+		}
 	}
 
 	resendOTPHandler(event) {
@@ -591,6 +593,7 @@ export default class AuthForm extends Component {
 								) : null}
 								<Centered width={stage !== 'login' ? '100%' : ''}>
 									<ModalButton
+										type="submit"
 										disabled={disableActions}
 										width="100%"
 										variant="fill"
