@@ -18,6 +18,10 @@ export { default as Modal } from './Modal';
 
 export { default as Navbar } from './Navbar';
 
+export { default as PopUp } from './PopUp';
+
+export { default as ProgressBar } from './ProgressBar';
+
 export { default as RadioButton } from './RadioButton';
 
 export { default as Shimmer } from './Shimmer';

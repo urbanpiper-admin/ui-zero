@@ -15,6 +15,7 @@ const ShimmerElement = styled.div`
 	height: ${({ shimmerHeight }) => shimmerHeight};
 	width: ${({ shimmerWidth }) => shimmerWidth};
 	margin: ${({ shimmerMargin }) => shimmerMargin};
+	border-radius: ${({ borderRadius }) => borderRadius};
 
 	background: #f6f6f6;
 
@@ -37,6 +38,7 @@ function Shimmer({
 	height = '30px',
 	width = '50%',
 	margin = '0',
+	borderRadius = '2px',
 	...otherProps
 }) {
 	return (
@@ -44,6 +46,7 @@ function Shimmer({
 			shimmerHeight={height}
 			shimmerWidth={width}
 			shimmerMargin={margin}
+			borderRadius={borderRadius}
 			{...otherProps}
 		/>
 	);

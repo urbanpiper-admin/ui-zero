@@ -130,8 +130,6 @@ const ModalContent = styled.div`
 
 	position: relative;
 	
-	border-radius: 5px;
-
 	background-color: white;
 	box-shadow: 0 0 10px 0 hsla(0, 0%, 0%, 0.3);
 

@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 import Anchor from '../Anchor';
 import Button from '../Button';
 import Modal from '../Modal';
+import PopUp from '../PopUp';
+import ProgressBar from '../ProgressBar';
 import TextField from '../TextField';
 
 const Header = styled.div`
@@ -21,31 +23,10 @@ const Body = styled.div`
 	background-color: ${({ theme, secondaryColor }) => secondaryColor};
 `;
 
-const ProgressAnimation = keyframes`
-	from {
-		transform: scaleX(0);
-	}
-
-	to {
-		transform: scaleX(1);
-	}
-`;
-
-const ProgressBar = styled.div`
+const AuthProgressBar = styled(ProgressBar)`
 	position: absolute;
 	top: 1px;
 	left: 0;
-
-	height: 5px;
-	width: 100%;
-
-	background-color: ${({ theme, backgroundColor }) =>
-		backgroundColor || theme.primaryColor};
-
-	transform: scaleX(0);
-	transform-origin: left;
-
-	animation: ${ProgressAnimation} 2s ease 0s forwards infinite;
 `;
 
 const Form = styled.form`
@@ -126,15 +107,6 @@ const ModalButton = styled(Button)`
 const CheckMessage = styled.span`
 	font-size: 12px;
 	color: #bfbfbf;
-`;
-
-const ErrorMessage = styled.div`
-	padding: 20px;
-	border-top: 5px solid #ec530a;
-
-	text-align: center;
-	font-size: 16px;
-	color: #ec530a;
 `;
 
 export default class AuthForm extends Component {
@@ -424,7 +396,7 @@ export default class AuthForm extends Component {
 						{this.getHeaderMessage()}
 					</Header>
 					<Body onSubmit={this.formSubmitHandler}>
-						{loading ? <ProgressBar backgroundColor={primaryColor} /> : null}
+						{loading ? <AuthProgressBar primaryColor={primaryColor} /> : null}
 						{!disableSocialLogin &&
 						(stage === 'login' || stage === 'signup') ? (
 							<SocialContainer>
@@ -654,13 +626,13 @@ export default class AuthForm extends Component {
 						</Form>
 					</Body>
 				</Modal>
-				{showError ? (
-					<Modal width="450px" showModal onClose={onCloseError}>
-						<ErrorMessage>
-							{error || 'Something went wrong. Please try again.'}
-						</ErrorMessage>
-					</Modal>
-				) : null}
+				<PopUp
+					primaryColor="#ec530a"
+					color="#ec530a"
+					message={error || 'Something went wrong. Please try again.'}
+					visible={showError}
+					onClose={onCloseError}
+				/>
 			</React.Fragment>
 		);
 	}
