@@ -80,7 +80,6 @@ const TabContainers = styled.div`
 	overflow-x: auto;
 
 	height: 100%;
-	width: 100%;
 	margin: 0 auto;
 
 	background-color: ${({ theme, primaryColor }) =>
