@@ -14,6 +14,8 @@ export { default as DropDown } from './DropDown';
 
 export { default as Image } from './Image';
 
+export { default as LocationSelector } from './LocationSelector';
+
 export { default as Modal } from './Modal';
 
 export { default as Navbar } from './Navbar';

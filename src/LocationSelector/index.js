@@ -11,6 +11,16 @@ const LocationSelectorElement = styled(Modal)`
 	min-height: 100%;
 `;
 
+const SearchInput = styled(TextField)`
+	height: 40px;
+
+	&& + label,
+	&&:focus + label,
+	&&:hover + label {
+		transform: translateY(-30px);
+	}
+`;
+
 const Container = styled.div`
 	margin: 20px 0;
 	padding: 20px;
@@ -70,6 +80,7 @@ const Title = styled.div`
 `;
 
 const Paragraph = styled.p`
+	margin: 0;
 	padding: 5px 0;
 
 	font-size: 13px;
@@ -156,7 +167,7 @@ export default function index({
 			onClose={onClose}
 			{...otherProps}
 		>
-			<TextField
+			<SearchInput
 				disabled={!visible}
 				label="Enter a location"
 				variant="boxed"
