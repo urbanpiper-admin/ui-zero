@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import getComputedStyleAttributeValue from '../utils/getComputedStyleAttributeValue';
-
 const Container = styled.div`
 	* {
 		box-sizing: border-box;
@@ -12,9 +10,8 @@ const Container = styled.div`
 
 	position: relative;
 
-	width: ${({width}) => width};
+	width: ${({ inputWidth }) => inputWidth};
 	padding-top: 20px;
-
 `;
 
 const Input = styled.textarea`
@@ -23,14 +20,16 @@ const Input = styled.textarea`
 	border: 1px solid #c2c2c2;
 	outline: 0;
 
-	:hover,
-	:focus {
+	background-color: transparent;
+
+	&:hover,
+	&:focus {
 		border-color: #a2a8af;
 	}
 
 	font-size: 14px;
 
-	:disabled {
+	&:disabled {
 		background-color: rgba(216, 216, 216, 0.2);
 		border-width: 0px;
 	}
@@ -52,7 +51,7 @@ const Label = styled.label`
 
 	${Input}:focus + & {
 		color: #9f9396;
-		color: ${({theme}) => theme.primaryColor};
+		color: ${({ theme }) => theme.primaryColor};
 	}
 `;
 
@@ -101,7 +100,7 @@ class TextArea extends Component {
 		const disabled = isDisabled ? { disabled: true } : {};
 
 		return (
-			<Container width={width}>
+			<Container inputWidth={width}>
 				<Input
 					{...disabled}
 					{...otherProps}
@@ -109,14 +108,16 @@ class TextArea extends Component {
 					onChange={this.inputChangeHandler}
 				/>
 
-				<Label
-					onClick={this.labelClickHandler}
-					isActive={inputValue !== ''}
-					{...disabled}
-				>
-					{label}
-					{warning ? <WarningMessage> ({warning})</WarningMessage> : null}
-				</Label>
+				{label ? (
+					<Label
+						onClick={this.labelClickHandler}
+						isActive={inputValue !== ''}
+						{...disabled}
+					>
+						{label}
+						{warning ? <WarningMessage> ({warning})</WarningMessage> : null}
+					</Label>
+				) : null}
 			</Container>
 		);
 	}

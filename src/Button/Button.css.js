@@ -12,12 +12,12 @@ const buttonStyles = `
 	cursor: pointer;
 	user-select: none;
 
-	:disabled {
+	&:disabled {
 		opacity: 0.6;
 		cursor: default;
 	}
 `;
 
 export default {
-  buttonStyles
+	buttonStyles
 };

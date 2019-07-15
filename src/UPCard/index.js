@@ -6,11 +6,8 @@ import Card from '../Card';
 import Counter from '../Counter';
 
 const CardHeader = styled.div`
-	display: inline-block;
-	white-space: nowrap;
-
-	overflow: hidden;
-	text-overflow: ellipsis;
+	display: inline-flex;
+	align-items: center;
 
 	width: 100%;
 	margin: 10px 0 0;
@@ -53,6 +50,7 @@ const Price = styled(CardFooterItem)`
 
 const Icon = styled.span`
 	display: inline-flex;
+	flex-shrink: 0;
 
 	position: relative;
 
@@ -63,9 +61,20 @@ const Icon = styled.span`
 	margin-right: 3px;
 
 	border: 1px solid
-		${({ type }) => (type && type === 'veg' ? '#3cae4d' : '#f56349')};
+		${({ type }) => {
+			switch (type) {
+				case 'veg':
+					return '#3cae4d';
 
-	::after {
+				case 'non-veg':
+					return '#f56349';
+
+				case 'egg':
+					return '#f5a524';
+			}
+		}};
+
+	&::after {
 		box-sizing: border-box;
 
 		content: '';
@@ -85,6 +94,16 @@ const Icon = styled.span`
 	}
 `;
 
+const Title = styled.span`
+	display: inline-block;
+	white-space: nowrap;
+
+	overflow: hidden;
+	text-overflow: ellipsis;
+
+	line-height: 16px;
+`;
+
 const CardCounter = styled(Counter)`
 	font-size: 14px;
 `;
@@ -93,7 +112,7 @@ const CardButton = styled(Button)`
 	font-size: 13px;
 `;
 
-export default function UPCard({
+function UPCard({
 	width,
 	primaryColor,
 	secondaryColor,
@@ -107,6 +126,7 @@ export default function UPCard({
 	itemQty,
 	itemPrice,
 	itemType,
+	itemOptions,
 	onItemQtyIncrease,
 	onItemQtyDecrease,
 	...otherProps
@@ -122,10 +142,10 @@ export default function UPCard({
 			{...otherProps}
 		>
 			<CardHeader>
-				{itemType === 'veg' || itemType === 'non-veg' ? (
+				{itemType === 'veg' || itemType === 'non-veg' || itemType === 'egg' ? (
 					<Icon type={itemType} />
 				) : null}
-				{title}
+				<Title>{title}</Title>
 			</CardHeader>
 			<CardBody>{description}</CardBody>
 			<CardFooter>
@@ -147,7 +167,7 @@ export default function UPCard({
 							color={primaryColor}
 							onClick={onItemQtyIncrease}
 						>
-							ADD
+							{itemOptions && itemOptions.length ? '+ ' : ''}ADD
 						</CardButton>
 					)}
 				</CardFooterItem>
@@ -155,3 +175,5 @@ export default function UPCard({
 		</Card>
 	);
 }
+
+export default UPCard;

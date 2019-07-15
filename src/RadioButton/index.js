@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const Wrapper = styled.div`
 	display: inline-flex;
-	align-content: center;
+	align-items: center;
 
 	* {
 		box-sizing: border-box;

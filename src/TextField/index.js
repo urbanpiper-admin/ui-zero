@@ -11,7 +11,7 @@ const Container = styled.div`
 	position: relative;
 
 	width: ${({ inputWidth }) => inputWidth};
-	padding-top: 20px;
+	padding-top: ${({ inputLabel }) => (inputLabel ? '20px' : '0')};
 `;
 
 const Input = styled.input`
@@ -20,8 +20,9 @@ const Input = styled.input`
 	height: 34px;
 	width: 100%;
 	padding: ${({ variant }) => (variant === 'boxed' ? '8px' : '0')};
-
 	outline: 0;
+
+	background-color: transparent;
 
 	&:hover,
 	&:focus {
@@ -117,7 +118,7 @@ const TextField = ({
 	const disabled = isDisabled ? { disabled: true } : {};
 
 	return (
-		<Container inputWidth={width}>
+		<Container inputWidth={width} inputLabel={label}>
 			<Input
 				{...disabled}
 				{...otherProps}
@@ -126,15 +127,17 @@ const TextField = ({
 				onChange={onChange}
 			/>
 
-			<Label
-				variant={variant}
-				onClick={labelClickHandler}
-				isActive={value}
-				{...disabled}
-			>
-				{label}
-				{warning ? <WarningMessage> ({warning})</WarningMessage> : null}
-			</Label>
+			{label ? (
+				<Label
+					variant={variant}
+					onClick={labelClickHandler}
+					isActive={value}
+					{...disabled}
+				>
+					{label}
+					{warning ? <WarningMessage> ({warning})</WarningMessage> : null}
+				</Label>
+			) : null}
 		</Container>
 	);
 };

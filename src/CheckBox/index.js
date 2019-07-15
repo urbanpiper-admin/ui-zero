@@ -5,7 +5,7 @@ import getComputedStyleAttributeValue from './../utils/getComputedStyleAttribute
 
 const Wrapper = styled.div`
 	display: inline-flex;
-	align-content: center;
+	align-items: center;
 
 	* {
 		box-sizing: border-box;
@@ -59,7 +59,7 @@ const PseudoCheckBox = styled.div`
 		background-color: ${({ primaryColor, theme }) =>
 			getComputedStyleAttributeValue(primaryColor, theme.primaryColor)};
 
-		::after {
+		&::after {
 			content: '✓';
 
 			position: absolute;
