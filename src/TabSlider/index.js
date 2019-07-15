@@ -10,7 +10,7 @@ const Wrapper = styled.div`
 
 	height: ${({ sliderHeight }) => sliderHeight};
 	width: 100%;
-	box-shadow: 0 2px 5px 0 hsla(0, 0%, 0%, 0.5);
+	/* box-shadow: 0 2px 5px 0 hsla(0, 0%, 0%, 0.5); */
 
 	background-color: ${({ theme, primaryColor }) =>
 		primaryColor || theme.primaryColor};
@@ -31,16 +31,19 @@ const Wrapper = styled.div`
 const IconButton = styled(Button)`
 	flex-shrink: 0;
 
-	position: relative;
+	position: absolute;
+	top: 0;
+	${({ align }) => align}: 0;
+	z-index: 1;
+	visibility: ${({ hidden }) => (hidden ? 'hidden' : 'visible')}
 
 	height: ${({ sliderHeight }) => sliderHeight};
 	width: calc(${({ sliderHeight }) => sliderHeight} * 1.5);
 	border: 0;
 	border-radius: 0;
-	box-shadow: 0 0 2px 0 hsla(0, 0%, 0%, 0.25);
+	/* box-shadow: 0 0 2px 0 hsla(0, 0%, 0%, 0.25); */
 
-	background-color: ${({ theme, primaryColor }) =>
-		primaryColor || theme.primaryColor};
+	background-color: transparent;
 
 	&:hover,
 	&:focus {
@@ -69,6 +72,21 @@ const IconButton = styled(Button)`
 						border-left: transparent;
 						border-top: transparent;
 					`}
+	}
+
+	&::after {	
+		content: '';
+
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: -1;
+		
+		background-color: ${({ theme, primaryColor }) =>
+			primaryColor || theme.primaryColor};
+		opacity: 0.75;
 	}
 `;
 
@@ -176,7 +194,7 @@ const Options = styled.div`
 		/* transform: translateY(0px); */
 	}
 
-	::before {
+	&::before {
 		content: '';
 
 		position: absolute;
@@ -189,7 +207,7 @@ const Options = styled.div`
 		transform: translate(-50%, -100%);
 	}
 
-	::after {
+	&::after {
 		content: '';
 
 		position: absolute;
@@ -226,11 +244,16 @@ export default class TabSlider extends Component {
 
 		this.state = {
 			focussedTabLeft: 0,
-			showOptions: false
+			showOptions: false,
+			hideLeftBtn: true,
+			hideRightBtn: false
 		};
 
 		this.tabFocusHandler = this.tabFocusHandler.bind(this);
 		this.tabBlurHandler = this.tabBlurHandler.bind(this);
+		this.slideButtonClickHandler = this.slideButtonClickHandler.bind(this);
+
+		this.scrollElementRef = React.createRef();
 	}
 
 	tabFocusHandler(event) {
@@ -256,6 +279,32 @@ export default class TabSlider extends Component {
 		});
 	}
 
+	slideButtonClickHandler(event, type) {
+		const isLeftButton = type === 'left';
+
+		const scrollAmount = 250;
+
+		const sliderElement = isLeftButton
+			? event.target.nextSibling
+			: event.target.previousSibling;
+
+		this.setState({
+			hideLeftBtn: isLeftButton
+				? sliderElement.scrollLeft - scrollAmount <= 0
+				: false,
+			hideRightBtn: isLeftButton
+				? false
+				: sliderElement.scrollLeft + sliderElement.offsetWidth + scrollAmount >=
+				  sliderElement.scrollWidth
+		});
+
+		sliderElement.scrollBy({
+			left: isLeftButton ? -scrollAmount : scrollAmount,
+			top: 0,
+			behavior: 'smooth'
+		});
+	}
+
 	render() {
 		const {
 			tabs,
@@ -267,7 +316,12 @@ export default class TabSlider extends Component {
 			...otherProps
 		} = this.props;
 
-		const { focussedTabLeft, showOptions } = this.state;
+		const {
+			focussedTabLeft,
+			showOptions,
+			hideLeftBtn,
+			hideRightBtn
+		} = this.state;
 
 		return (
 			<Wrapper
@@ -276,22 +330,34 @@ export default class TabSlider extends Component {
 				{...otherProps}
 			>
 				<IconButton
+					hidden={hideLeftBtn}
 					align="left"
 					sliderHeight={height}
 					primaryColor={primaryColor}
 					secondaryColor={secondaryColor}
-					onClick={event =>
-						event.target.nextSibling.scrollBy({
-							left: -250,
-							top: 0,
-							behavior: 'smooth'
-						})
-					}
+					onClick={event => this.slideButtonClickHandler(event, 'left')}
 				/>
 				<TabContainers
 					primaryColor={primaryColor}
 					secondaryColor={secondaryColor}
 					sliderHeight={height}
+					onScroll={event => {
+						const { currentTarget: sliderElement } = event;
+
+						if (this.scrollTimer) {
+							clearTimeout(this.scrollTimer);
+						} else {
+							setTimeout(() => {
+								this.setState({
+									hideLeftBtn: sliderElement.scrollLeft <= 0,
+									hideRightBtn:
+										sliderElement.scrollLeft + sliderElement.offsetWidth >=
+										sliderElement.scrollWidth
+								});
+							}, 100);
+						}
+					}}
+					ref={this.scrollElementRef}
 				>
 					{tabs.map(
 						(
@@ -378,18 +444,23 @@ export default class TabSlider extends Component {
 
 				<IconButton
 					align="right"
+					hidden={hideRightBtn}
 					sliderHeight={height}
 					primaryColor={primaryColor}
 					secondaryColor={secondaryColor}
-					onClick={event =>
-						event.target.previousSibling.scrollBy({
-							left: 250,
-							top: 0,
-							behavior: 'smooth'
-						})
-					}
+					onClick={event => this.slideButtonClickHandler(event, 'right')}
 				/>
 			</Wrapper>
 		);
+	}
+
+	componentDidMount() {
+		const scrollElement = this.scrollElementRef.current;
+
+		if (scrollElement.offsetWidth >= scrollElement.scrollWidth) {
+			this.setState({
+				hideRightBtn: true
+			});
+		}
 	}
 }

@@ -11,6 +11,42 @@ const LocationSelectorElement = styled(Modal)`
 	min-height: 100%;
 `;
 
+const Modes = styled.div`
+	display: flex;
+
+	position: relative;
+
+	margin-bottom: 30px;
+
+	&::after {
+		content: '';
+
+		position: absolute;
+		top: 100%;
+		left: 0;
+
+		height: 1px;
+		width: 50%;
+
+		background-color: ${({ theme }) => theme.primaryColor};
+
+		transform: translateX(${({ mode }) => (mode === 'pickup' ? '100%' : '0')});
+		transition: transform 0.16s;
+	}
+`;
+
+const Mode = styled(Button)`
+	border: 0;
+
+	${({ isActive, theme }) =>
+		isActive
+			? `
+				font-weight: 600;
+				color: ${theme.primaryColor};
+			`
+			: ''}
+`;
+
 const SearchInput = styled(TextField)`
 	height: 40px;
 
@@ -22,7 +58,7 @@ const SearchInput = styled(TextField)`
 `;
 
 const Container = styled.div`
-	margin: 20px 0;
+	margin-top: 25px;
 	padding: 20px;
 
 	border: 1px solid #c2c2c2;
@@ -106,12 +142,14 @@ const Locations = ({ disabled, locations = [], onLocationSelect }) => (
 	</React.Fragment>
 );
 
-export default function index({
+function LocationSelector({
+	mode = 'delivery',
 	visible,
 	savedLocations = [],
 	searchResults = [],
 	onClose,
 	onGetCurrentLocation,
+	onModeChange,
 	searchKey,
 	onSearchKeyChange,
 	onLocationSelect,
@@ -123,15 +161,31 @@ export default function index({
 		}
 	};
 
-	const LocationSelectorBody =
+	const isPickupMode = mode === 'pickup';
+
+	const modeChangeHandler = mode => {
+		onSearchKeyChange('');
+		onModeChange(mode);
+	};
+
+	const SearchResults = (
+		<Container>
+			<Locations
+				disabled={!visible}
+				locations={searchResults}
+				onLocationSelect={onLocationSelect}
+			/>
+		</Container>
+	);
+
+	const PickupModeBody =
+		mode === 'pickup' && searchResults && searchResults.length
+			? SearchResults
+			: null;
+
+	const DeliveryModeBody =
 		searchResults && searchResults.length ? (
-			<Container>
-				<Locations
-					disabled={!visible}
-					locations={searchResults}
-					onLocationSelect={onLocationSelect}
-				/>
-			</Container>
+			SearchResults
 		) : (
 			<React.Fragment>
 				<Container
@@ -146,6 +200,7 @@ export default function index({
 					<Title>Get current location</Title>
 					<Paragraph>Using GPS</Paragraph>
 				</Container>
+
 				{savedLocations && savedLocations.length ? (
 					<Container>
 						<Heading>SAVED ADDRESSES</Heading>
@@ -167,16 +222,38 @@ export default function index({
 			onClose={onClose}
 			{...otherProps}
 		>
+			<Modes mode={mode}>
+				<Mode
+					width="50%"
+					backgroundColor="transparent"
+					color="inherit"
+					isActive={!isPickupMode}
+					onClick={event => modeChangeHandler('delivery')}
+				>
+					DELIVERY
+				</Mode>
+				<Mode
+					width="50%"
+					backgroundColor="transparent"
+					color="inherit"
+					isActive={isPickupMode}
+					onClick={event => modeChangeHandler('pickup')}
+				>
+					PICKUP
+				</Mode>
+			</Modes>
+
 			<SearchInput
 				disabled={!visible}
 				label="Enter a location"
 				variant="boxed"
 				width="100%"
 				value={searchKey}
-				onChange={onSearchKeyChange}
+				onChange={event => onSearchKeyChange(event.target.value)}
 			/>
-
-			{LocationSelectorBody}
+			{isPickupMode ? PickupModeBody : DeliveryModeBody}
 		</LocationSelectorElement>
 	);
 }
+
+export default LocationSelector;
