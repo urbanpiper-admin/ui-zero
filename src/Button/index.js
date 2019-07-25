@@ -27,7 +27,8 @@ const ButtonComponent = styled.button`
 	}};
 
 	background-color: ${({ theme, variant, backgroundColor }) =>
-		backgroundColor || (variant === 'fill' ? theme.primaryColor : 'white')};
+		backgroundColor ||
+		(variant === 'fill' ? theme.primaryColor : 'transparent')};
 
 	color: ${({ theme, btnColor, variant }) =>
 		btnColor || (variant === 'fill' ? 'white' : theme.primaryColor)};

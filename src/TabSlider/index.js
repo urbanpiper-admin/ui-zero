@@ -10,7 +10,6 @@ const Wrapper = styled.div`
 
 	height: ${({ sliderHeight }) => sliderHeight};
 	width: 100%;
-	/* box-shadow: 0 2px 5px 0 hsla(0, 0%, 0%, 0.5); */
 
 	background-color: ${({ theme, primaryColor }) =>
 		primaryColor || theme.primaryColor};
@@ -41,13 +40,11 @@ const IconButton = styled(Button)`
 	width: calc(${({ sliderHeight }) => sliderHeight} * 1.5);
 	border: 0;
 	border-radius: 0;
-	/* box-shadow: 0 0 2px 0 hsla(0, 0%, 0%, 0.25); */
 
 	background-color: transparent;
 
-	&:hover,
-	&:focus {
-		filter: brightness(90%);
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.15);
 	}
 
 	&::before {

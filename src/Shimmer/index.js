@@ -36,7 +36,7 @@ const ShimmerElement = styled.div`
 
 function Shimmer({
 	height = '30px',
-	width = '50%',
+	width = '100%',
 	margin = '0',
 	borderRadius = '2px',
 	...otherProps

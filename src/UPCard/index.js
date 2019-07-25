@@ -44,7 +44,7 @@ const CardFooterItem = styled.div`
 `;
 
 const Price = styled(CardFooterItem)`
-	font-weight: bolder;
+	font-weight: 500;
 	font-size: 16px;
 `;
 
@@ -101,7 +101,7 @@ const Title = styled.span`
 	overflow: hidden;
 	text-overflow: ellipsis;
 
-	line-height: 16px;
+	line-height: 24px;
 `;
 
 const CardCounter = styled(Counter)`
